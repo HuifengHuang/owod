@@ -1,29 +1,85 @@
 <template>
     <div id="app" class="wrapper">
         <div class="content">
-            <div class="item1">
-                <div class="div_border" style="position: relative; width: 100%;height:300px;">
+            <div class="item1" style="width: 20%;">
+                <div class="div_border" style="display: flex;justify-content: space-between; width: 100%;height:300px;">
+                    <div class="redu_label">降维数据展示</div>
                     <div class="childContainer1" style="width: 300px; height:300px;">
-                        <svg id="svg" style="width: 300px; height:300px;border:1px blue solid" xmlns="http://www.w3.org/2000/svg">
+                        <svg id="svg" style="width: 300px; height:300px;" xmlns="http://www.w3.org/2000/svg">
                         </svg>
                     </div>
                 </div>
 
                 <div class="div_border" style="width: 100%;height:450px;">
-                    <div class="childContainer2" style="width: 100%;height: 100%;">
-                        <ul class="container_ul" id="image_container">
-                            <li v-for="(image, index) in chosen_imageData" :key="index"><img :src="image"/></li>
+                    <div class="flex_column_center" style="width: 100%;height: 100%;">
+                        <ul class="container_ul">
+                            <li v-for="(image, index) in chosen_imageData" :key="index">
+                                <img :src="image" @click="get_similar_images(index) " style="cursor:pointer;"/>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
 
             <div class="item2" style="width: 60%;">
-
+                <div class="div_border flex_between" style="height: 100px;width: 100%;">
+                    <div style="height: 100%;width: 80%;border: 2px whitesmoke solid;">
+                        <div class="flex_column_center" style="width: 100%;height: 100%;">
+                            <ul class="container_ul" style="">
+                                <li v-for="(image, index) in similar_imageData" :key="index"><img :src="image"/></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="height: 100%;width: 200px;border: 2px whitesmoke solid;">
+                        <div class="flex_column_center" style="flex-direction:row;align-items:center;width: 100%;height: 50%;">
+                            <div>人工标注类别：</div>
+                            <input id="mark_class" type="text" value="elephant" style="width: 80px;height: 20px;">
+                        </div>
+                        <div class="flex_column_center" style="width: 100%;height: 50%;">
+                            <button @click="get_similars">确认标注</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="div_border flex_between" style="height: 680px;width: 100%;">
+                    <div style="height: 100%;width: 50%;border: 1px black solid;">
+                        <div class="flex_column_center" style="width: 100%;height: 100%;">
+                            <div class="flex_between" style="padding: 10px;">
+                                <h2 style="text-align: center;">Simple</h2>
+                                <button @click="Delete" style="margin-left: 100px;">Delete</button>
+                            </div>
+                            <ul class="container_ul">
+                                <li v-for="(image_data, image_name, index) in similar_simple_imageInfo" :key="image_name" v-if="index>0" @click="choose_image_simple(image_name)"
+                                             :class="{isSelected:image_data[1]}">
+                                    <img :src="image_data[0]"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="height: 100%;width: 50%;border: 1px black solid;">
+                        <div class="flex_column_center" style="width: 100%;height: 100%;">
+                            <div class="flex_between" style="padding: 10px;">
+                                <h2 style="text-align: center;">Hard</h2>
+                                <button @click="Submit" style="margin-left: 100px;">Submit</button>
+                            </div>
+                            <ul class="container_ul">
+                                <li v-for="(image_data, image_name, index) in similar_hard_imageInfo" :key="image_name" v-if="index>0" @click="choose_image_hard(image_name)"
+                                             :class="{isSelected:image_data[1]}">
+                                    <img :src="image_data[0]"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
             </div>
 
             <div class="item3" style="width: 20%;">
-                
+                <div>
+
+                </div>
+                <div>
+                    
+                </div>
             </div>
         </div>
   
@@ -42,12 +98,23 @@
       name: 'vue-owod',
       data() {
           return {
-                reduce_distri_data:[],
+                chosen_imageInfo:[],
                 chosen_imageData:[],
+                similar_imageInfo:[],
+                similar_imageData:[],
+                similar_simple_imageInfo:{},
+                similar_hard_imageInfo:{},
+                /*  
+                    {image_name:[image_data, false], ...}
+                */
+
+
+                delete_simple_imageInfo:[],
+                delete_hard_imageInfo:[],
           }
       },
       mounted:function(){
-        this.clusters_show();
+        this.redu_show();
       },
       methods:{
         arrayBufferToBase64(buffer) {
@@ -62,7 +129,7 @@
                 return window.btoa(binary);
         },
 
-        clusters_show(){
+        redu_show(){
             fetch('http://127.0.0.1:5000/data')
                 .then(response => response.json())
                 .then(data => {
@@ -71,13 +138,25 @@
                 .catch(error => console.error('Error:', error));
         },
 
-        fetch_images(image_name){
+        fetch_images(image_name, save){
             var that = this;
             fetch('http://127.0.0.1:5000/images/' + image_name)
             .then(response => response.arrayBuffer())
             .then(data =>{
                 var image_data = "data:image/jpeg;base64," + that.arrayBufferToBase64(data);
-                this.chosen_imageData.push(image_data);
+                if(save=="chosen_imageData"){
+                    this.chosen_imageData.push(image_data);
+                    this.chosen_imageInfo.push(image_name);
+                }else if(save=="similar_imageData"){
+                    this.similar_imageData.push(image_data);
+                }else if(save=="similar_simple_imageData"){
+                    this.similar_simple_imageInfo[image_name].push(image_data);
+                    this.similar_simple_imageInfo[image_name].push(false);
+                }else if(save=="similar_hard_imageData"){
+                    this.similar_hard_imageInfo[image_name].push(image_data);
+                    this.similar_hard_imageInfo[image_name].push(false);
+                }
+
                 // console.log(typeof(image_data));
                 this.$forceUpdate()
             });
@@ -144,6 +223,7 @@
                         .classed("not_possible",true)
                         .classed("selected",false);
                 this.chosen_imageData.length = 0;
+                this.chosen_imageInfo.length = 0;
             };
   
             var lasso_draw = () => {
@@ -161,8 +241,8 @@
                         .classed("possible",false);
                 ls.selectedItems()
                         .classed("selected",true);
-                ls.selectedItems().each((d)=>{
-                    this.fetch_images(d[0]);
+                ls.selectedItems().each((d,i)=>{
+                    this.fetch_images(d[0], "chosen_imageData");
             });
             };
             var svgNode = d3.select("#svg");
@@ -177,6 +257,71 @@
   
             svgNode.call(ls);
           },
+          get_similar_images(index){
+            var image_path = this.chosen_imageInfo[index];
+            this.similar_imageInfo.length = 0;
+            this.similar_imageData.length = 0;
+            fetch('http://127.0.0.1:5000/simi/'+ image_path )
+                .then(response => response.json())
+                .then(data => {
+                    this.similar_imageInfo = data;
+                    for(let i in data){
+                        console.log(data[i][0]);
+                        this.fetch_images(data[i][0], "similar_imageData");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+          },
+          get_similars(){
+            this.similar_simple_imageInfo = {};
+            this.similar_hard_imageInfo = {};
+            var mark_class = document.getElementById("mark_class").value;
+            fetch('http://127.0.0.1:5000/similars/'+ mark_class )
+                .then(response => response.json())
+                .then(data => {
+                    for(let i in data[0]){
+                        this.similar_simple_imageInfo[data[0][i]] = [];
+                        this.fetch_images(data[0][i],"similar_simple_imageData");
+                    }
+                    for(let i in data[1]){
+                        this.similar_hard_imageInfo[data[1][i]] = [];
+                        this.fetch_images(data[1][i],"similar_hard_imageData");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+          },
+          Delete(){
+            var a = 0;
+          },
+          Submit(){
+            var a = 0;
+          },
+          choose_image_simple(image_name){
+            console.log("choose_image_simple:" + image_name);
+            if(this.delete_simple_imageInfo.includes(image_name)){
+                let indexx = this.delete_simple_imageInfo.indexOf(image_name);
+                this.delete_simple_imageInfo.splice(indexx, 1);
+                this.similar_simple_imageInfo[image_name][1] = false;
+            }else{
+                this.delete_simple_imageInfo.push(image_name);
+                this.similar_simple_imageInfo[image_name][1] = true;
+            }
+            console.log(this.delete_simple_imageInfo);
+            this.$forceUpdate();
+          },
+          choose_image_hard(image_name){
+            console.log("choose_image_hard:" + image_name);
+            if(this.delete_hard_imageInfo.includes(image_name)){
+                let indexx = this.delete_hard_imageInfo.indexOf(image_name);
+                this.delete_hard_imageInfo.splice(indexx, 1);
+                this.similar_hard_imageInfo[image_name][1] = false;
+            }else{
+                this.delete_hard_imageInfo.push(image_name);
+                this.similar_hard_imageInfo[image_name][1] = true;
+            }
+            console.log(this.delete_hard_imageInfo);
+            this.$forceUpdate();
+          },
         }
     }
   </script>
@@ -187,13 +332,6 @@
           body{
               font-size:0 px;
           }
-          *{
-              margin:0;
-              padding:0;
-          }
-          h4{
-              padding: 5px;
-          }
           .axis path,
           .axis line{
               fill: none;
@@ -203,10 +341,6 @@
           .axis text {
               font-family: sans-serif;
               font-size: 11px;
-          }
-          .div_size_10{
-              width: 20px;
-              height: 20px;
           }
 
           .selected {
