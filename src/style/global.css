@@ -18,8 +18,8 @@
 .item1,.item2,.item3{
     float: left;
     height: 100%;
-    border: 5px solid #ff0;
-    background-color: skyblue;
+    border: 5px solid rgb(195, 195, 160);
+    background-color: whitesmoke;
     display: flex;
     flex-direction:column;
     justify-content: space-between;
@@ -37,8 +37,8 @@
     text-align: center;
 }
 
-.childContainer1{
-    border: 1px steelblue solid;
+.simple_border{
+    border: 1px rgb(180, 70, 154) solid;
 }
 
 .flex_column_center{
@@ -59,10 +59,10 @@
 }
 
 li {
-    border: 1px solid black;
-    width: 60px;
-    height: 60px;
-    margin: 2px;
+    border: 1px solid gray;
+    width: 75px;
+    height: 75px;
+    margin: 4px;
 }
 img {
     width: 100%;
@@ -75,9 +75,18 @@ img {
 }
 
 .isSelected{
-    border: 3px solid yellow;
+    border: 5px solid yellow;
 }
 
 .notSelected{
     border: 1px solid black;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+  }
+.checkbox-group label {
+    margin: 10px; /* Add space between checkboxes */
 }

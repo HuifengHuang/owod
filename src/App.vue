@@ -3,8 +3,7 @@
         <div class="content">
             <div class="item1" style="width: 20%;">
                 <div class="div_border" style="display: flex;justify-content: space-between; width: 100%;height:300px;">
-                    <div class="redu_label">降维数据展示</div>
-                    <div class="childContainer1" style="width: 300px; height:300px;">
+                    <div class="simple_border" style="width: 300px; height:300px;">
                         <svg id="svg" style="width: 300px; height:300px;" xmlns="http://www.w3.org/2000/svg">
                         </svg>
                     </div>
@@ -36,8 +35,8 @@
                             <input id="mark_class" type="text" value="elephant" style="width: 80px;height: 20px;">
                         </div>
                         <div class="flex_column_center" style="width: 100%;height: 50%;">
-                            <button @click="get_similars">确认标注</button>
-                        </div>
+                            <button @click="get_similars(),get_text_result(),get_detection_results()">确认标注</button>
+                         </div> <!-- ,get_text_result() -->
                     </div>
                 </div>
                 <div class="div_border flex_between" style="height: 680px;width: 100%;">
@@ -74,11 +73,29 @@
             </div>
 
             <div class="item3" style="width: 20%;">
-                <div>
-
+                <div class="flex_column_center simple_border" style="width: 100%;height: 50%;">
+                    <div class="checkbox-group" style="overflow: auto;width: 100%;height: 90%;">
+                        <label v-for="option in options" :key="option">
+                            <input type="checkbox" v-model="selectedOptions" :value="option">
+                            {{ option }}
+                        </label>
+                    </div>
+                    <div class="flex_column_center">
+                        <button style="margin: 10px;">确认提交</button>
+                    </div>
                 </div>
-                <div>
-                    
+                <div class="flex_column_center simple_border" style="width: 100%;height: 50%;">
+                    <div class="flex_column_center">
+                        <button @click="change_result" style="margin: 10px;">切换结果</button>
+                    </div>
+                    <div class="checkbox-group" style="overflow: auto;width: 100%;height: 90%;">
+                        <label v-for="(ap, cls) in results" :key="cls">
+                                <div>
+                                    <h3>{{ cls }}</h3>
+                                    <h5 style="color: purple;">{{ ap }}</h5>
+                                </div>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,10 +124,15 @@
                 /*  
                     {image_name:[image_data, false], ...}
                 */
-
-
                 delete_simple_imageInfo:[],
                 delete_hard_imageInfo:[],
+
+                options: [],
+                selectedOptions: [],
+
+                results:{},
+                results_overall:{},
+                results_single:{},
           }
       },
       mounted:function(){
@@ -291,13 +313,47 @@
                 .catch(error => console.error('Error:', error));
           },
           Delete(){
-            var a = 0;
+            fetch('http://127.0.0.1:5000/deal_simple_image', {
+                method: 'POST', // 使用POST方法
+                headers: {
+                    'Content-Type': 'application/json' // 设置请求头，表明发送JSON数据
+                },
+                body: JSON.stringify(
+                    this.delete_simple_imageInfo
+                ) // 将数据转换为JSON字符串
+                })
+                .then(response => response.json()) // 解析JSON格式的响应
+                .then(data => console.log(data)) // 处理解析后的数据
+                .catch(error => console.error('Error:', error)); // 处理错误
+            for(let i in this.delete_simple_imageInfo){
+                delete this.similar_simple_imageInfo[this.delete_simple_imageInfo[i]];
+            }
+            this.$forceUpdate();
           },
           Submit(){
-            var a = 0;
+            fetch('http://127.0.0.1:5000/deal_hard_image', {
+                method: 'POST', // 使用POST方法
+                headers: {
+                    'Content-Type': 'application/json' // 设置请求头，表明发送JSON数据
+                },
+                body: JSON.stringify(
+                    this.delete_hard_imageInfo
+                ) // 将数据转换为JSON字符串
+                })
+                .then(response => response.json()) // 解析JSON格式的响应
+                .then(data => console.log(data)) // 处理解析后的数据
+                .catch(error => console.error('Error:', error)); // 处理错误
+            for(const key in this.similar_hard_imageInfo){
+                if(!this.delete_hard_imageInfo.includes(key)){
+                    delete this.similar_hard_imageInfo[key];
+                }else{
+                    this.similar_hard_imageInfo[key][1] = false;
+                }
+            }
+            this.delete_hard_imageInfo.length = 0;
+            this.$forceUpdate();
           },
           choose_image_simple(image_name){
-            console.log("choose_image_simple:" + image_name);
             if(this.delete_simple_imageInfo.includes(image_name)){
                 let indexx = this.delete_simple_imageInfo.indexOf(image_name);
                 this.delete_simple_imageInfo.splice(indexx, 1);
@@ -306,11 +362,9 @@
                 this.delete_simple_imageInfo.push(image_name);
                 this.similar_simple_imageInfo[image_name][1] = true;
             }
-            console.log(this.delete_simple_imageInfo);
             this.$forceUpdate();
           },
           choose_image_hard(image_name){
-            console.log("choose_image_hard:" + image_name);
             if(this.delete_hard_imageInfo.includes(image_name)){
                 let indexx = this.delete_hard_imageInfo.indexOf(image_name);
                 this.delete_hard_imageInfo.splice(indexx, 1);
@@ -319,9 +373,32 @@
                 this.delete_hard_imageInfo.push(image_name);
                 this.similar_hard_imageInfo[image_name][1] = true;
             }
-            console.log(this.delete_hard_imageInfo);
             this.$forceUpdate();
           },
+          get_text_result(){
+            var mark_class = document.getElementById("mark_class").value;
+            fetch('http://127.0.0.1:5000/text_result/'+ mark_class )
+                .then(response => response.json())
+                .then(data => {
+                    this.options = data;
+                })
+                .catch(error => console.error('Error:', error));
+          },
+          get_detection_results(){
+            fetch('http://127.0.0.1:5000/detection_results')
+                .then(response => response.json())
+                .then(data => {
+                    this.results_overall = data[0];
+                    this.results_single = data[1];
+                    this.results = this.results_overall;
+                    this.$forceUpdate();
+                })
+                .catch(error => console.error('Error:', error));
+          },
+          change_result(){
+            this.results = (this.results_overall==this.results)?this.results_single:this.results_overall;
+            this.$forceUpdate();
+          }
         }
     }
   </script>
