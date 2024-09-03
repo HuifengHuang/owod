@@ -77,8 +77,8 @@ def get_similars(class_name):
         return str(e)
 
 
-@app.route('/deal_simple_image', methods=["POST"])
-def deal_simple_image():
+@app.route('/delete_image', methods=["POST"])
+def delete_image():
     images = request.get_json()
     for image in images:
         delete_file(image)
@@ -88,25 +88,10 @@ def deal_simple_image():
     }), 200
 
 
-@app.route('/deal_hard_image', methods=["POST"])
-def deal_hard_image():
-    images = request.get_json()
-    if len(images) == 0:
-        return jsonify({
-            'message': 'Empty Data',
-        }), 200
-
-    match = re.search(r'^(.*)\\[^\\]*$', images[0])
-    group = match.group(1)
-    print("group:" + group)
-    for root, dirs, files in os.walk(group):
-        for file in files:
-            if os.path.join(root, file) not in images:
-                delete_file(os.path.join(root, file))
-
-    return jsonify({
-        'message': 'Data received successfully!',
-    }), 200
+@app.route('/detection_results', methods=["GET"])
+def get_detection_results():
+    print(get_result('result.json'))
+    return get_result('result.json')
 
 
 @app.route('/text_result/<class_name>', methods=["GET"])
@@ -114,12 +99,25 @@ def get_text_result(class_name):
     return ChatWithLLM(class_name, model_type='gpt-4o-ca')
 
 
-@app.route('/detection_results', methods=["GET"])
-def get_detection_results():
-    print(get_result('result.json'))
-    return get_result('result.json')
+@app.route('/describe_submit', methods=["POST"])
+def describe_submit():
+    describes = request.get_json()
+    for key, value in describes.items():
+        file_path = os.path.join(key+"_images", "describes.txt")
+        with open(file_path, 'w', encoding="utf-8") as file:
+            file.write('\n'.join(str(i) for i in value))
+    return jsonify({
+        'message': 'Data received successfully!',
+    }), 200
 
 
+@app.route('/text_submit', methods=["GET"])
+def text_submit():
+    texts = request.get_json()
+    folder_name =  ""
+
+
+### 以下路由为测试路由 ###
 @app.route('/test/<file>', methods=["GET"])
 def get_images_test(file):
     return file
