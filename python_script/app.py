@@ -8,7 +8,7 @@ from PIL import Image
 from flask import Flask, request, jsonify
 
 from flask_cors import CORS
-from data import getData
+from data1 import getData
 from main_code import tsne_and_kmeans
 from main_code2 import find_similar_images, get_HardAndSimple, ChatWithLLM
 from result_view import get_result

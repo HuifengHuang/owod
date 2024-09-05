@@ -233,26 +233,38 @@ def tsne_and_kmeans(encoded_file):
     使用t-SNE降维和k-means聚类
     输出：{[图片名,降维数据（x）,降维数据（y）,标签名],...}
     """
-    with open(encoded_file, 'rb') as f:
-        encoded_data = pickle.load(f)
 
-    image_features_list = [item[1] for item in encoded_data]
-    image_names_list = [item[0] for item in encoded_data]
-    image_features_list = random.sample(image_features_list, 10000)
+    with open(encoded_file, 'rb') as f:
+          encoded_data = pickle.load(f)
+    encoded_data_sample = random.sample(encoded_data, 10000)
+    image_features_list = [item[1] for item in encoded_data_sample]
+    image_names_list = [item[0] for item in encoded_data_sample]
     image_features_array = np.vstack(image_features_list)
+
+
+     # # 执行聚类分析
+    num_clusters = 20
+    labels, image_features_array = load_and_cluster_images(image_features_array, num_clusters=num_clusters)
+     # print(labels)
+     # print(image_features_array)
 
     reduce_method = 'tsne'
     reduced_features = reduce_dimensionality(image_features_array, method=reduce_method)
-    # 确定最佳聚类数量
-    K, sse, silhouette_scores = determine_optimal_clusters(image_features_array)
-    optimal_k = K[np.argmax(silhouette_scores)]
-    print(f"Optimal number of clusters: {optimal_k}")
-    # # 执行聚类分析
-    num_clusters = optimal_k
-    labels, image_features_array = load_and_cluster_images(image_features_array, num_clusters=num_clusters)
-    # print(labels)
-    # print(image_features_array)
-    return constract(image_names_list, reduced_features, labels)
+     # # 确定最佳聚类数量
+     # K, sse, silhouette_scores = determine_optimal_clusters(image_features_array)
+     # optimal_k = K[np.argmax(silhouette_scores)]
+     # print(f"Optimal number of clusters: {optimal_k}")
+
+    result = constract(image_names_list, reduced_features, labels)
+    # output_file = 'data1.py'
+    #  # 将结果写入到data.py文件中
+    # with open(output_file, 'w') as f:
+    #     f.write("def getData():\n")
+    #     f.write("    return [\n")
+    #     for item in result:
+    #         f.write(f"        ['{item[0]}', {item[1]}, {item[2]}, {item[3]}],\n")
+    #     f.write("    ]\n")
+    return result
 
 
 def constract(one_dimension, two_dimension, other_one):
@@ -265,8 +277,8 @@ def constract(one_dimension, two_dimension, other_one):
 
 
 if __name__ == '__main__':
-    encoded_file = 'encoded.pkl'
+    # encoded_file = 'encoded2.pkl'
     # print(tsne_and_kmeans(encoded_file))
 
-    cluster_all_unknown(encoded_file)
-    batch_process_with_encoded_data(encoded_file, threshold, batch_size)
+    # cluster_all_unknown(encoded_file)
+    # batch_process_with_encoded_data(encoded_file, threshold, batch_size)
