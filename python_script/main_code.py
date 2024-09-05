@@ -277,7 +277,7 @@ def constract(one_dimension, two_dimension, other_one):
 
 
 if __name__ == '__main__':
-    # encoded_file = 'encoded2.pkl'
+    encoded_file = 'encoded2.pkl'
     # print(tsne_and_kmeans(encoded_file))
 
     # cluster_all_unknown(encoded_file)

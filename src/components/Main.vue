@@ -23,14 +23,14 @@
 
             <div class="item2" style="width: 60%;">
                 <div class="div_border flex_between" style="height: 200px;width: 100%;">
-                    <div style="height: 100%;width: 80%;border: 2px whitesmoke solid;">
+                    <div style="height: 100%;width: 76%;border: 2px whitesmoke solid;">
                         <div class="flex_column_center" style="width: 100%;height: 100%;">
                             <ul class="container_ul">
                                 <li v-for="(image, index) in similar_imageData" :key="index"><img :src="image"/></li>
                             </ul>
                         </div>
                     </div>
-                    <div style="height: 100%;width: 200px;border: 2px whitesmoke solid;margin-right: 5px;">
+                    <div style="height: 100%;width: 250px;border: 2px whitesmoke solid;margin-right: 5px;">
                         <div class="flex_column_center" style="width: 100%;height: 50%;">
                             <el-input v-model="className" placeholder="人工标注：请输入类别"></el-input>
                         </div>
