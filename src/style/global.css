@@ -4,15 +4,27 @@
     box-sizing: border-box; /* 所有元素都设置bord-box样式，防止边框越界 */
 }
 .wrapper{
-    min-width: 320px;
-    max-width: 1800px;
+    height: 100%;
 }
 
 .content{
     width: 100%;
-    height: 800px;
+    height: 100%;
     background-color: rgb(239, 219, 222);
-    margin: 30px;
+    border: 2px solid black;
+}
+
+.Head{
+    width: 100%;
+    height: 5%;
+    background-color: #494949;
+    display: flex;
+    
+}
+
+.Main{
+    width: 100%;
+    height: 95%;
 }
 
 .item1,.item2,.item3{

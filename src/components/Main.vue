@@ -1,8 +1,13 @@
 <template>
     
-    <div id="app" class="wrapper">
+    <div class="wrapper">
         <div class="content">
-            <div class="item1" style="width: 20%;">
+            <div class="Head">
+                
+            </div>
+
+            <div class="Main">
+                <div class="item1" style="width: 20%;">
                 <div class="div_border flex_row_center" style="width: 100%;height:40%;">
                     <div style="width: 280px; height:280px;background-color: white">
                         <svg id="svg" style="width: 280px; height:280px;" xmlns="http://www.w3.org/2000/svg">
@@ -19,132 +24,134 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-
-            <div class="item2" style="width: 60%;">
-                <div class="div_border flex_between" style="height: 200px;width: 100%;">
-                    <div style="height: 100%;width: 76%;border: 2px whitesmoke solid;">
-                        <div class="flex_column_center" style="width: 100%;height: 100%;">
-                            <ul class="container_ul">
-                                <li v-for="(image, index) in similar_imageData" :key="index"><img :src="image"/></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div style="height: 100%;width: 250px;border: 2px whitesmoke solid;margin-right: 5px;">
-                        <div class="flex_column_center" style="width: 100%;height: 50%;">
-                            <el-input v-model="className" placeholder="人工标注：请输入类别"></el-input>
-                        </div>
-                        <div class="flex_column_center" style="width: 100%;height: 50%;">
-                            <el-button type="primary" plain @click="get_similars(),get_text_result(),get_detection_results(),handleSimpleSlider()">确认标注</el-button>
-                         </div> <!-- ,get_text_result() -->
-                    </div>
                 </div>
-                <div class="div_border flex_between" style="flex-direction: column;height: 580px;width: 100%;">
-                    <el-collapse accordion>
-                        <el-collapse-item title="Simple" name="1">
-                            <el-divider></el-divider>
+
+                <div class="item2" style="width: 60%;">
+                    <div class="div_border flex_between" style="height: 200px;width: 100%;">
+                        <div style="height: 100%;width: 76%;border: 2px whitesmoke solid;">
                             <div class="flex_column_center" style="width: 100%;height: 100%;">
-                                <div class="flex_between" style="padding: 10px;">
-                                    <div style="margin-left:50px;width: 700px;">
-                                        <el-slider  v-model="simple_similar_value"
-                                            show-stops
-                                            :step="0.005"
-                                            :min="0.28"
-                                            :max="0.34"
-                                            @change="handleSimpleSlider"></el-slider>
-                                    </div>
-                                    <div class="flex_column_center">
-                                        <label style="font-size: medium;">selected number：{{this.simple_selected_num}}</label>
-                                    </div>
-                                    <div class="flex_column_center" style="width: 100px;height: 40px;">
-                                        <el-button type="primary" plain style="margin: 10px;" @click="Delete()">Delete</el-button>
-                                    </div>
-                                </div>
-                                <ul class="container_ul" style="height: 360px;">
-                                    <li v-for="(image_data, image_name) in shown_simple_imageInfo" :key="image_name" @click="choose_image_simple(image_name)"
-                                                :class="{isSelected:image_data[1]}">
-                                        <img :src="image_data[0]"/>
-                                    </li>
+                                <ul class="container_ul">
+                                    <li v-for="(image, index) in similar_imageData" :key="index"><img :src="image"/></li>
                                 </ul>
                             </div>
-                        </el-collapse-item>
-                        <el-collapse-item title="Hard" name="2">
-                            <el-divider></el-divider>
-                            <div class="flex_column_center" style="width: 100%;height: 100%;">
-                                <div class="flex_between" style="padding: 10px;">
-                                    <div style="margin-left:50px;width: 700px;">
-                                        <el-slider  v-model="hard_similar_value"
-                                            range
-                                            show-stops
-                                            :step="0.005"
-                                            :min="0.26"
-                                            :max="0.31"
-                                            @change="handleHardSlider"></el-slider>
-                                    </div>
-                                    <div class="flex_column_center">
-                                        <label style="font-size: medium;">selected number：{{this.hard_selected_num}}</label>
-                                    </div>
-                                    <div class="flex_column_center" style="width: 100px;height: 40px;">
-                                        <el-button type="primary" plain style="margin: 10px;" @click="Submit()">Submit</el-button>
-                                    </div>
-                                </div>
-                                <ul class="container_ul" style="height: 360px;">
-                                    <li v-for="(image_data, image_name) in shown_hard_imageInfo" :key="image_name" @click="choose_image_hard(image_name)"
-                                                :class="{isSelected:image_data[1]}">
-                                        <img :src="image_data[0]"/>
-                                    </li>
-                                </ul>
+                        </div>
+                        <div style="height: 100%;width: 250px;border: 2px whitesmoke solid;margin-right: 5px;">
+                            <div class="flex_column_center" style="width: 100%;height: 50%;">
+                                <el-input v-model="className" placeholder="人工标注：请输入类别"></el-input>
                             </div>
-                        </el-collapse-item>
-                    </el-collapse>
+                            <div class="flex_column_center" style="width: 100%;height: 50%;">
+                                <el-button type="primary" plain @click="get_similars(),get_text_result(),get_detection_results(),handleSimpleSlider()">确认标注</el-button>
+                            </div> <!-- ,get_text_result() -->
+                        </div>
+                    </div>
+                    <div class="div_border flex_between" style="flex-direction: column;height: 580px;width: 100%;">
+                        <el-collapse accordion>
+                            <el-collapse-item title="Simple" name="1">
+                                <el-divider></el-divider>
+                                <div class="flex_column_center" style="width: 100%;height: 100%;">
+                                    <div class="flex_between" style="padding: 10px;">
+                                        <div style="margin-left:50px;width: 700px;">
+                                            <el-slider  v-model="simple_similar_value"
+                                                show-stops
+                                                :step="0.005"
+                                                :min="0.28"
+                                                :max="0.34"
+                                                @change="handleSimpleSlider"></el-slider>
+                                        </div>
+                                        <div class="flex_column_center">
+                                            <label style="font-size: medium;">selected number：{{this.simple_selected_num}}</label>
+                                        </div>
+                                        <div class="flex_column_center" style="width: 100px;height: 40px;">
+                                            <el-button type="primary" plain style="margin: 10px;" @click="Delete()">Delete</el-button>
+                                        </div>
+                                    </div>
+                                    <ul class="container_ul" style="height: 360px;">
+                                        <li v-for="(image_data, image_name) in shown_simple_imageInfo" :key="image_name" @click="choose_image_simple(image_name)"
+                                                    :class="{isSelected:image_data[1]}">
+                                            <img :src="image_data[0]"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item title="Hard" name="2">
+                                <el-divider></el-divider>
+                                <div class="flex_column_center" style="width: 100%;height: 100%;">
+                                    <div class="flex_between" style="padding: 10px;">
+                                        <div style="margin-left:50px;width: 700px;">
+                                            <el-slider  v-model="hard_similar_value"
+                                                range
+                                                show-stops
+                                                :step="0.005"
+                                                :min="0.26"
+                                                :max="0.31"
+                                                @change="handleHardSlider"></el-slider>
+                                        </div>
+                                        <div class="flex_column_center">
+                                            <label style="font-size: medium;">selected number：{{this.hard_selected_num}}</label>
+                                        </div>
+                                        <div class="flex_column_center" style="width: 100px;height: 40px;">
+                                            <el-button type="primary" plain style="margin: 10px;" @click="Submit()">Submit</el-button>
+                                        </div>
+                                    </div>
+                                    <ul class="container_ul" style="height: 360px;">
+                                        <li v-for="(image_data, image_name) in shown_hard_imageInfo" :key="image_name" @click="choose_image_hard(image_name)"
+                                                    :class="{isSelected:image_data[1]}">
+                                            <img :src="image_data[0]"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </div>
+
+                <div class="item3" style="width: 20%;">
+                    <div class="flex_column_between div_border" style="width: 100%;height: 48%;">
+                        <div style="width: 100%;height: 5%;display: flex;">
+                            <p class="text_distribe" style="padding: 3px;">对象描述</p>
+                        </div>
+                        <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: ghostwhite;">
+                            <el-checkbox-group v-model="selectedOptions" @change="handleCheckedCitiesChange">
+                                <el-checkbox v-for="option in options" :label="option" :key="option">{{option}}</el-checkbox>
+                            </el-checkbox-group>
+                        </div>
+                        <div style="display: flex;flex-direction: column;justify-content: flex-start; width: 100%;height: 25%;">
+                            <div style="width: 100%;height: 40px;">
+                                <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin-top: 10px;">
+                                    全选
+                                </el-checkbox>
+                            </div>
+                            <div class="flex_column_center" style="width: 100%;height: 40px;">
+                                <el-button type="primary" plain @click="describe_submit()" style="margin: 10px;">确认提交</el-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex_column_center div_border" style="width: 100%;height: 50%;">
+                        <div style="width: 100%;height: 5%;display: flex;">
+                            <p class="text_distribe" style="padding: 3px;">检测结果</p>
+                        </div>
+                        <div style="position:relative;width: 100%;height: 80%;background-color: ghostwhite;">
+                            <!-- <el-tree :data="results" :props="defaultProps"></el-tree> -->
+                            <div v-if="result_overall_shown" class="checkbox-group" style="position: absolute;overflow: auto;width: 100%;height: 100%;">
+                                <label v-for="(ap, cls) in results" :key="cls">
+                                        <div>
+                                            <h3>{{ cls }}</h3>
+                                            <h5 style="color: purple;">{{ ap }}</h5>
+                                        </div>
+                                </label>
+                            </div>
+                            <div style="position: absolute;overflow: auto;width: 100%; height:100%;">
+                                <svg v-show="result_single_shown" id="result_svg" xmlns="http://www.w3.org/2000/svg">
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex_column_center">
+                            <el-button type="primary" plain @click="change_result()" style="margin: 10px;">切换结果</el-button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="item3" style="width: 20%;">
-                <div class="flex_column_between div_border" style="width: 100%;height: 48%;">
-                    <div style="width: 100%;height: 5%;display: flex;">
-                        <p class="text_distribe" style="padding: 3px;">对象描述</p>
-                    </div>
-                    <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: ghostwhite;">
-                        <el-checkbox-group v-model="selectedOptions" @change="handleCheckedCitiesChange">
-                            <el-checkbox v-for="option in options" :label="option" :key="option">{{option}}</el-checkbox>
-                        </el-checkbox-group>
-                    </div>
-                    <div style="display: flex;flex-direction: column;justify-content: flex-start; width: 100%;height: 25%;">
-                        <div style="width: 100%;height: 40px;">
-                            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin-top: 10px;">
-                                全选
-                            </el-checkbox>
-                        </div>
-                        <div class="flex_column_center" style="width: 100%;height: 40px;">
-                            <el-button type="primary" plain @click="describe_submit()" style="margin: 10px;">确认提交</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex_column_center div_border" style="width: 100%;height: 50%;">
-                    <div style="width: 100%;height: 5%;display: flex;">
-                        <p class="text_distribe" style="padding: 3px;">检测结果</p>
-                    </div>
-                    <div style="position:relative;width: 100%;height: 80%;background-color: ghostwhite;">
-                        <!-- <el-tree :data="results" :props="defaultProps"></el-tree> -->
-                        <div v-if="result_overall_shown" class="checkbox-group" style="position: absolute;overflow: auto;width: 100%;height: 100%;">
-                            <label v-for="(ap, cls) in results" :key="cls">
-                                    <div>
-                                        <h3>{{ cls }}</h3>
-                                        <h5 style="color: purple;">{{ ap }}</h5>
-                                    </div>
-                            </label>
-                        </div>
-                        <div style="position: absolute;overflow: auto;width: 100%; height:100%;">
-                            <svg v-show="result_single_shown" id="result_svg" xmlns="http://www.w3.org/2000/svg">
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex_column_center">
-                        <el-button type="primary" plain @click="change_result()" style="margin: 10px;">切换结果</el-button>
-                    </div>
-                </div>
-            </div>
         </div>
   
 
