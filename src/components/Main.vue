@@ -45,13 +45,16 @@
                             <el-divider></el-divider>
                             <div class="flex_column_center" style="width: 100%;height: 100%;">
                                 <div class="flex_between" style="padding: 10px;">
-                                    <div style="margin-left:50px;width: 800px;">
+                                    <div style="margin-left:50px;width: 700px;">
                                         <el-slider  v-model="simple_similar_value"
                                             show-stops
                                             :step="0.005"
                                             :min="0.28"
                                             :max="0.34"
                                             @change="handleSimpleSlider"></el-slider>
+                                    </div>
+                                    <div class="flex_column_center">
+                                        <label style="font-size: medium;">selected number：{{this.simple_selected_num}}</label>
                                     </div>
                                     <div class="flex_column_center" style="width: 100px;height: 40px;">
                                         <el-button type="primary" plain style="margin: 10px;" @click="Delete()">Delete</el-button>
@@ -69,7 +72,7 @@
                             <el-divider></el-divider>
                             <div class="flex_column_center" style="width: 100%;height: 100%;">
                                 <div class="flex_between" style="padding: 10px;">
-                                    <div style="margin-left:50px;width: 800px;">
+                                    <div style="margin-left:50px;width: 700px;">
                                         <el-slider  v-model="hard_similar_value"
                                             range
                                             show-stops
@@ -77,6 +80,9 @@
                                             :min="0.26"
                                             :max="0.31"
                                             @change="handleHardSlider"></el-slider>
+                                    </div>
+                                    <div class="flex_column_center">
+                                        <label style="font-size: medium;">selected number：{{this.hard_selected_num}}</label>
                                     </div>
                                     <div class="flex_column_center" style="width: 100px;height: 40px;">
                                         <el-button type="primary" plain style="margin: 10px;" @click="Submit()">Submit</el-button>
@@ -191,6 +197,8 @@
                 hard_similar_value:[0.26,0.31],
 
                 className:'',
+                simple_selected_num:0,
+                hard_selected_num:0,
           }
       },
       mounted:function(){
@@ -345,7 +353,7 @@
             const marginTop = 20;
             const marginRight = 10;
             const marginBottom = 0;
-            const marginLeft = 80;
+            const marginLeft = 100;
             const height = values.length * 20 + marginTop + marginBottom;
             const rectHeight = 15;
             var svg = d3.select("#result_svg")
@@ -449,6 +457,7 @@
                 delete this.shown_simple_imageInfo[this.delete_simple_imageInfo[i]];
             }
             this.delete_simple_imageInfo.length = 0;
+            this.simple_selected_num = 0;
             this.$forceUpdate();
           },
           Submit(){
@@ -479,6 +488,7 @@
                 this.shown_hard_imageInfo[value][1] = false;
             }
             this.delete_hard_imageInfo.length = 0;
+            this.hard_selected_num = 0;
             this.$forceUpdate();
           },
           choose_image_simple(image_name){
@@ -487,10 +497,12 @@
                 this.delete_simple_imageInfo.splice(indexx, 1);
                 this.similar_simple_imageInfo[image_name][1] = false;
                 this.shown_simple_imageInfo[image_name][1] = false;
+                this.simple_selected_num--;
             }else{
                 this.delete_simple_imageInfo.push(image_name);
                 this.similar_simple_imageInfo[image_name][1] = true;
                 this.shown_simple_imageInfo[image_name][1] = true;
+                this.simple_selected_num++;
             }
             this.$forceUpdate();
           },
@@ -499,9 +511,11 @@
                 let indexx = this.delete_hard_imageInfo.indexOf(image_name);
                 this.delete_hard_imageInfo.splice(indexx, 1);
                 this.similar_hard_imageInfo[image_name][1] = false;
+                this.hard_selected_num--;
             }else{
                 this.delete_hard_imageInfo.push(image_name);
                 this.similar_hard_imageInfo[image_name][1] = true;
+                this.hard_selected_num++;
             }
             this.$forceUpdate();
           },

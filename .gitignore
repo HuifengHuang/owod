@@ -13,3 +13,10 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+# ingore image directory
+python_script/*_images/
+python_script/*.pkl
+python_script/unknown_images_try1/
+python_script/unknown_images_try2/
+*.pyc
