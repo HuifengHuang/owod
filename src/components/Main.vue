@@ -59,23 +59,10 @@
                 </div>
 
                 <div class="item2" style="flex-grow: 1;">
-                    <div class="flex_between" style="height: 200px;width: 100%;">
-                        <div style="height: 100%;width: 76%;border: 2px whitesmoke solid;">
-                            <div class="flex_column_center" style="width: 100%;height: 100%;">
-                                <ul class="container_ul">
-                                    <li v-for="(image, index) in similar_imageData" :key="index"><img :src="image"/></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div style="height: 100%;width: 250px;border: 2px whitesmoke solid;margin-right: 5px;">
-                            <div class="flex_column_center" style="width: 100%;height: 50%;">
-                                <el-input v-model="className" placeholder="人工标注：请输入类别"></el-input>
-                            </div>
-                            <div class="flex_column_center" style="width: 100%;height: 50%;">
-                                <el-button type="primary" plain @click="get_similars(),get_text_result(),get_detection_results(),handleSimpleSlider()">确认标注</el-button>
-                            </div> <!-- ,get_text_result() -->
-                        </div>
+                    <div class="flex_row_bewteen" style="width: 100%;height: 6%;">
+                        <span class="view_title">Manually Rejection And Screening</span>
                     </div>
+
                     <div class="flex_between" style="flex-direction: column;height: 580px;width: 100%;">
                         <el-collapse accordion>
                             <el-collapse-item title="Simple" name="1">
