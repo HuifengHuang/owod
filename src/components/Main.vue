@@ -9,7 +9,7 @@
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 25%;">
+                <div class="item1" style="width: 25%;flex-shrink: 0;">
                     <div class="flex_row_center" style="width: 100%;height:40%;">
                         <div style="width: 320px; height:320px;background-color: ghostwhite">
                             <svg id="svg" style="width: 320px; height:320px;" xmlns="http://www.w3.org/2000/svg">
@@ -21,23 +21,24 @@
                         <span class="view_title">Image Shown</span>
                         <el-switch
                         v-model="switch_value"
+                        @change="switch_change"
                         active-text="get similar image">
                         </el-switch>
                     </div>
 
                     <div style="width: 100%;height:43%;">
-                        <el-tabs v-model="tabsName" type="border-card" @tab-click="handleClick" stretch="true">
+                        <el-tabs v-model="tabsName" type="border-card" @tab-click="handleClick" stretch='true'>
                             <el-tab-pane label="selected images" name="first">
                                 <ul class="container_ul" style="width: 100%;height: 300px;">
                                     <li v-for="(image, index) in chosen_imageData" :key="index">
-                                        <img :src="image" @click="get_similar_images(index) " style="cursor:pointer;"/>
+                                        <img :src="image" @click="get_similar_images(index)" :class="{pointer:switch_value}"/>
                                     </li>
                                 </ul>
                             </el-tab-pane>                                                                     
                             <el-tab-pane label="similar images" name="second" :disabled="!switch_value">
                                 <ul class="container_ul" style="width: 100%;height: 300px;">
-                                    <li v-for="(image, index) in chosen_imageData" :key="index">
-                                        <img :src="image" @click="get_similar_images(index) " style="cursor:pointer;"/>
+                                    <li v-for="(image, index) in similar_imageData" :key="index">
+                                        <img :src="image"/>
                                     </li>
                                 </ul>
                             </el-tab-pane>
@@ -81,7 +82,7 @@
                                 <el-divider></el-divider>
                                 <div class="flex_column_center" style="width: 100%;height: 100%;">
                                     <div class="flex_between" style="padding: 10px;">
-                                        <div style="margin-left:50px;width: 700px;">
+                                        <div style="margin-left:50px;width: 100%;">
                                             <el-slider  v-model="simple_similar_value"
                                                 show-stops
                                                 :step="0.005"
@@ -108,7 +109,7 @@
                                 <el-divider></el-divider>
                                 <div class="flex_column_center" style="width: 100%;height: 100%;">
                                     <div class="flex_between" style="padding: 10px;">
-                                        <div style="margin-left:50px;width: 700px;">
+                                        <div style="margin-left:50px;width: 100%;">
                                             <el-slider  v-model="hard_similar_value"
                                                 range
                                                 show-stops
@@ -136,7 +137,7 @@
                     </div>
                 </div>
 
-                <div class="item3" style="width: 25%;">
+                <div class="item3" style="width: 25%;flex-shrink: 0;">
                     <div class="flex_column_between" style="width: 100%;height: 48%;">
                         <div style="width: 100%;height: 5%;display: flex;">
                             <p class="text_distribe" style="padding: 3px;">对象描述</p>
@@ -444,6 +445,8 @@
                 .text(d => d);
           },
           get_similar_images(index){
+            if(this.switch_value==false)return;
+            this.tabsName = "second";
             var image_path = this.chosen_imageInfo[index];
             this.similar_imageInfo.length = 0;
             this.similar_imageData.length = 0;
@@ -635,7 +638,13 @@
             }
             this.$forceUpdate();
           },
-
+          switch_change(){
+            if(this.switch_value==false){
+                this.tabsName = "first";
+                this.similar_imageData = this.similar_imageInfo = [];
+                this.$forceUpdate();
+            }
+          }
         }
     }
   </script>
