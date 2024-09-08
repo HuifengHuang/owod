@@ -3,31 +3,62 @@
     <div class="wrapper">
         <div class="content">
             <div class="Head">
-                
+                <div class="flex_column_center" style="height: 100%;width: 20%;">
+                    <span class="head_title">Manual annotation</span>
+                </div>
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 20%;">
-                <div class="div_border flex_row_center" style="width: 100%;height:40%;">
-                    <div style="width: 280px; height:280px;background-color: white">
-                        <svg id="svg" style="width: 280px; height:280px;" xmlns="http://www.w3.org/2000/svg">
-                        </svg>
+                <div class="item1" style="width: 25%;">
+                    <div class="flex_row_center" style="width: 100%;height:40%;">
+                        <div style="width: 320px; height:320px;background-color: ghostwhite">
+                            <svg id="svg" style="width: 320px; height:320px;" xmlns="http://www.w3.org/2000/svg">
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="flex_row_bewteen" style="width: 100%;height: 6%;">
+                        <span class="view_title">Image Shown</span>
+                        <el-switch
+                        v-model="switch_value"
+                        active-text="get similar image">
+                        </el-switch>
+                    </div>
+
+                    <div style="width: 100%;height:43%;">
+                        <el-tabs v-model="tabsName" type="border-card" @tab-click="handleClick" stretch="true">
+                            <el-tab-pane label="selected images" name="first">
+                                <ul class="container_ul" style="width: 100%;height: 300px;">
+                                    <li v-for="(image, index) in chosen_imageData" :key="index">
+                                        <img :src="image" @click="get_similar_images(index) " style="cursor:pointer;"/>
+                                    </li>
+                                </ul>
+                            </el-tab-pane>                                                                     
+                            <el-tab-pane label="similar images" name="second" :disabled="!switch_value">
+                                <ul class="container_ul" style="width: 100%;height: 300px;">
+                                    <li v-for="(image, index) in chosen_imageData" :key="index">
+                                        <img :src="image" @click="get_similar_images(index) " style="cursor:pointer;"/>
+                                    </li>
+                                </ul>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
+
+                    <div class="input_div" style="width: 100%;height: 8%;">
+                        <div class="flex_column_between" style="width: 50%;height: 80%;margin-left: 30px;">
+                            <span class="describe_label" style="margin-left: 3px;">Manually Label</span>
+                            <el-input v-model="className" placeholder="please input label"></el-input>
+                        </div>
+                        <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 30px;">
+                            <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
+                            @click="get_similars(),get_text_result(),get_detection_results(),handleSimpleSlider()">
+                            Annotate</el-button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="div_border" style="width: 100%;height:58%;">
-                    <div class="flex_column_center" style="width: 100%;height: 100%;">
-                        <ul class="container_ul">
-                            <li v-for="(image, index) in chosen_imageData" :key="index">
-                                <img :src="image" @click="get_similar_images(index) " style="cursor:pointer;"/>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                </div>
-
-                <div class="item2" style="width: 60%;">
-                    <div class="div_border flex_between" style="height: 200px;width: 100%;">
+                <div class="item2" style="flex-grow: 1;">
+                    <div class="flex_between" style="height: 200px;width: 100%;">
                         <div style="height: 100%;width: 76%;border: 2px whitesmoke solid;">
                             <div class="flex_column_center" style="width: 100%;height: 100%;">
                                 <ul class="container_ul">
@@ -44,7 +75,7 @@
                             </div> <!-- ,get_text_result() -->
                         </div>
                     </div>
-                    <div class="div_border flex_between" style="flex-direction: column;height: 580px;width: 100%;">
+                    <div class="flex_between" style="flex-direction: column;height: 580px;width: 100%;">
                         <el-collapse accordion>
                             <el-collapse-item title="Simple" name="1">
                                 <el-divider></el-divider>
@@ -105,8 +136,8 @@
                     </div>
                 </div>
 
-                <div class="item3" style="width: 20%;">
-                    <div class="flex_column_between div_border" style="width: 100%;height: 48%;">
+                <div class="item3" style="width: 25%;">
+                    <div class="flex_column_between" style="width: 100%;height: 48%;">
                         <div style="width: 100%;height: 5%;display: flex;">
                             <p class="text_distribe" style="padding: 3px;">对象描述</p>
                         </div>
@@ -126,7 +157,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex_column_center div_border" style="width: 100%;height: 50%;">
+                    <div class="flex_column_center" style="width: 100%;height: 50%;">
                         <div style="width: 100%;height: 5%;display: flex;">
                             <p class="text_distribe" style="padding: 3px;">检测结果</p>
                         </div>
@@ -206,6 +237,8 @@
                 className:'',
                 simple_selected_num:0,
                 hard_selected_num:0,
+                switch_value:false,
+                tabsName:"first",
           }
       },
       mounted:function(){
