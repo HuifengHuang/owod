@@ -85,6 +85,20 @@
     align-items: flex-end;
 }
 
+.difficulty_radio{
+    width: 100px;
+    height: 30px!important;
+    padding: 0!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.full_fill{
+    height: 100%;
+    width: 100%;
+}
+
 .redu_label{
     width: 50px;
     height: 100%;

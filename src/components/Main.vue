@@ -62,6 +62,33 @@
                     <div class="flex_row_bewteen" style="width: 100%;height: 6%;">
                         <span class="view_title">Manually Rejection And Screening</span>
                     </div>
+                    <el-divider></el-divider>
+                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
+                        <span class="describe_label" style="margin-left: 30px;">Similarity Scale</span>
+                        <div class="flex_row_bewteen" style="height: 100%;">
+                            <el-radio v-model="difficulty_radio" label="simple" border class="difficulty_radio">Simple</el-radio>
+                            <el-radio v-model="difficulty_radio" label="hard" border class="difficulty_radio">Hard</el-radio>
+                        </div>
+                    </div>
+
+                    <div style="position: relative; width: 100%;height: 35%;">
+                        <div style="width: 85%;margin: 0 auto;">
+                            <el-slider  v-model="similarity_value"
+                                range
+                                :step="0.005"
+                                :min="0"
+                                :max="1"
+                                @change="handleSimpleSlider"></el-slider>
+                        </div>
+                        <div style="position: absolute;width: 100%;height: 80%;margin: -15px auto;">
+                            <div style="width: 85%;height: 100%;margin: 0 auto;">
+                                <svg v-show="this.difficulty_radio=='simple'" id="svg_simple" class="full_fill" xmlns="http://www.w3.org/2000/svg">
+                                </svg>
+                                <svg v-show="this.difficulty_radio=='hard'" id="svg_hard" class="full_fill" xmlns="http://www.w3.org/2000/svg">
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="flex_between" style="flex-direction: column;height: 580px;width: 100%;">
                         <el-collapse accordion>
@@ -86,34 +113,6 @@
                                     </div>
                                     <ul class="container_ul" style="height: 360px;">
                                         <li v-for="(image_data, image_name) in shown_simple_imageInfo" :key="image_name" @click="choose_image_simple(image_name)"
-                                                    :class="{isSelected:image_data[1]}">
-                                            <img :src="image_data[0]"/>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </el-collapse-item>
-                            <el-collapse-item title="Hard" name="2">
-                                <el-divider></el-divider>
-                                <div class="flex_column_center" style="width: 100%;height: 100%;">
-                                    <div class="flex_between" style="padding: 10px;">
-                                        <div style="margin-left:50px;width: 100%;">
-                                            <el-slider  v-model="hard_similar_value"
-                                                range
-                                                show-stops
-                                                :step="0.005"
-                                                :min="0.26"
-                                                :max="0.31"
-                                                @change="handleHardSlider"></el-slider>
-                                        </div>
-                                        <div class="flex_column_center">
-                                            <label style="font-size: medium;">selected number：{{this.hard_selected_num}}</label>
-                                        </div>
-                                        <div class="flex_column_center" style="width: 100px;height: 40px;">
-                                            <el-button type="primary" plain style="margin: 10px;" @click="Submit()">Submit</el-button>
-                                        </div>
-                                    </div>
-                                    <ul class="container_ul" style="height: 360px;">
-                                        <li v-for="(image_data, image_name) in shown_hard_imageInfo" :key="image_name" @click="choose_image_hard(image_name)"
                                                     :class="{isSelected:image_data[1]}">
                                             <img :src="image_data[0]"/>
                                         </li>
@@ -185,7 +184,7 @@
     import lasso from "./d3-lasso";
     import $ from "jquery";
     import {generateDistinctColors, colors_50} from './color.js';
-    import { getSimilarValue } from "./common.js";
+    import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown} from "./common.js";
   
     export default {
       name: 'vue-owod',
@@ -219,14 +218,14 @@
                 result_overall_shown: false,
                 result_single_shown: true,
 
-                simple_similar_value:0.3,
-                hard_similar_value:[0.26,0.31],
+                similarity_value:[0,1],
 
                 className:'',
                 simple_selected_num:0,
                 hard_selected_num:0,
                 switch_value:false,
                 tabsName:"first",
+                difficulty_radio:'simple',
           }
       },
       mounted:function(){
@@ -234,18 +233,6 @@
 
       },
       methods:{
-        arrayBufferToBase64(buffer) {
-                //第一步，将ArrayBuffer转为二进制字符串
-                var binary = "";
-                var bytes = new Uint8Array(buffer);
-                var len = bytes.byteLength;
-                for (var i = 0; i < len; i++) {
-                    binary += String.fromCharCode(bytes[i]);
-                }
-                //将二进制字符串转为base64字符串
-                return window.btoa(binary);
-        },
-
         redu_show(){
             fetch('http://127.0.0.1:5000/data')
                 .then(response => response.json())
@@ -256,11 +243,10 @@
         },
 
         fetch_images(image_name, save){
-            var that = this;
             fetch('http://127.0.0.1:5000/images/' + image_name)
             .then(response => response.arrayBuffer())
             .then(data =>{
-                var image_data = "data:image/jpeg;base64," + that.arrayBufferToBase64(data);
+                var image_data = "data:image/jpeg;base64," + arrayBufferToBase64(data);
                 if(save=="chosen_imageData"){
                     this.chosen_imageData.push(image_data);
                     this.chosen_imageInfo.push(image_name);
@@ -279,14 +265,6 @@
             });
         },
   
-        findMaxMin(dataset,index){
-            var max=-9999 , min=9999;
-            for(let i in dataset){
-                if(dataset[i][index]>max)max = dataset[i][index];
-                if(dataset[i][index]<min)min = dataset[i][index];
-            }
-            return [max,min];
-        },
         reduce_distribution(data){
             // const distinctColors = generateDistinctColors(50);
             const color_50 = colors_50();
@@ -296,8 +274,8 @@
 
             var svg = d3.select("#svg")
             var dataset = data;
-            var [Xmax,Xmin] = this.findMaxMin(dataset,1);
-            var [Ymax,Ymin] = this.findMaxMin(dataset,2);
+            var [Xmax,Xmin] = findMaxMin(dataset,1);
+            var [Ymax,Ymin] = findMaxMin(dataset,2);
             let svg_element = document.getElementById("svg");
             let JQsvg = $(svg_element);
             svg_element = JQsvg[0];
@@ -373,63 +351,6 @@
                 .on("end",lasso_end); 
   
             svgNode.call(ls);
-          },
-          single_class_shown(){
-            const keys = Object.keys(this.results_single);
-            const values = Object.values(this.results_single);
-            const width = 320;
-            const marginTop = 20;
-            const marginRight = 10;
-            const marginBottom = 0;
-            const marginLeft = 100;
-            const height = values.length * 20 + marginTop + marginBottom;
-            const rectHeight = 15;
-            var svg = d3.select("#result_svg")
-                .attr("width", width)
-                .attr("height", height);
-            
-            var xScale = d3.scaleLinear()
-                .domain([0,100])
-                .range([marginLeft ,  width - marginLeft - marginRight]);
-            var yScale = d3.scaleBand()
-                .domain(values)
-                .range([marginTop, height-marginBottom])
-                .padding(0.3);
-            var yKeyScale = d3.scaleBand()
-                .domain(keys)
-                .range([marginTop, height-marginBottom])
-                .padding(0.3);
-            svg.selectAll("rect")
-                .data(values)
-                .enter()
-                .append("rect")
-                .attr("x", marginLeft)
-                .attr("y", d => yScale(d))
-                .attr("width", d => xScale(d))
-                .attr("height", rectHeight)
-                .attr("fill", "steelblue");
-            
-            //竖向坐标轴
-            svg.append("g")
-                .attr("transform", `translate(${marginLeft}, 0)`)
-                .call(d3.axisLeft(yKeyScale).tickSizeOuter(0))
-                .attr("font-size", 10)
-
-            svg.selectAll(".tick text")
-                .style("font-size", "12px");
-
-            svg.append("g")
-                .attr("fill", "white")
-                .attr("text-anchor", "end")
-                .selectAll()
-                .data(values)
-                .join("text")
-                .attr("x", (d) => marginLeft + xScale(d) + 25)
-                .attr("y", (d) => yScale(d) + yScale.bandwidth() / 2)
-                .attr("dy", "0.35em")
-                .attr("font-size", "12px")
-                .attr("fill", "black")
-                .text(d => d);
           },
           get_similar_images(index){
             if(this.switch_value==false)return;
@@ -567,7 +488,7 @@
                     this.results_single = data[1];
                     this.results = this.results_overall;
                     this.$forceUpdate();
-                    this.single_class_shown();
+                    single_class_shown(this.results_single);
                 })
                 .catch(error => console.error('Error:', error));
           },
@@ -609,18 +530,6 @@
                 let value = getSimilarValue(key);
                 if(value>=min && value<=max){
                     this.shown_simple_imageInfo[key] = this.similar_simple_imageInfo[key];
-                }
-            }
-            this.$forceUpdate();
-          },
-          handleHardSlider(){
-            let min = this.hard_similar_value[0];
-            let max = this.hard_similar_value[1];
-            this.shown_hard_imageInfo = {};
-            for(let key in this.similar_hard_imageInfo){
-                let value = getSimilarValue(key);
-                if(value>=min && value<=max){
-                    this.shown_hard_imageInfo[key] = this.similar_hard_imageInfo[key];
                 }
             }
             this.$forceUpdate();
