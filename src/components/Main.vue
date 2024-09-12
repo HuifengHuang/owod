@@ -154,7 +154,9 @@
                             </div>
                         </div>
                     </div>
+
                     <div style="width: 106%;height: 3px;background-color: #e9e9e9;margin: 0 0 0 -20px;"></div>
+                    
                     <div class="flex_column_center" style="width: 100%;height: 50%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 10%;">
                             <span class="view_title">Detection Result</span>

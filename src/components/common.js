@@ -29,7 +29,7 @@ import * as d3 from "d3";
 export function single_class_shown(results_single){
     const keys = Object.keys(results_single);
     const values = Object.values(results_single);
-    const width = 320;
+    const width = 450;
     const marginTop = 20;
     const marginRight = 10;
     const marginBottom = 0;
