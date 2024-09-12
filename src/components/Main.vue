@@ -106,7 +106,7 @@
                         <div style="width: 100%;margin: 10px 30px;">
                             <span class="describe_label">{{ this.difficulty_radio }} Group</span>
                         </div>
-                        <div class="flex_column_center" style="width: 100%;height: 70%;">
+                        <div class="flex_column_center" style="width: 100%;height: 70%;margin-bottom: 5px;">
                             <ul class="container_ul" style="height: 360px;">
                                 <li v-for="(image_data, image_name) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
                                             :class="{isSelected:image_data[1]}">
@@ -114,6 +114,11 @@
                                 </li>
                             </ul>
                         </div>
+                        <div style="width: 100%;margin: 3px 5px;">
+                            <span class="range_label">Current Selected: {{ this.current_selected_num }}</span>
+                        </div>
+                        <el-divider></el-divider>
+                        
                     </div>
                 </div>
 
@@ -526,7 +531,6 @@
                     this.shown_imageInfo[key] = similar_images[key];
                 }
             }
-            console.log(this.shown_imageInfo);
             this.$forceUpdate();
           },
           switch_change(){
@@ -560,8 +564,8 @@
             this.$forceUpdate();
           },
           difficulty_change(){
+            this.handleSliderInput();
             this.handleSliderChange();
-            this.$forceUpdate();
           },
         }
     }
