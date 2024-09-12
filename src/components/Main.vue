@@ -103,21 +103,31 @@
 
                     <div class="flex_column_start" style="height: 60%;width: 100%;margin-top: 50px;">
                         <el-divider></el-divider>
-                        <div style="width: 100%;margin: 10px 30px;">
+                        <div class="flex_row_bewteen"  style="width: 100%;margin: 10px 30px;">
                             <span class="describe_label">{{ this.difficulty_radio }} Group</span>
+                            <el-switch
+                                style="display: block;margin-right: 50px;"
+                                v-model="filter_mode"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                active-text="Reserve"
+                                inactive-text="Delete">
+                            </el-switch>
                         </div>
                         <div class="flex_column_center" style="width: 100%;height: 70%;margin-bottom: 5px;">
                             <ul class="container_ul" style="height: 360px;">
-                                <li v-for="(image_data, image_name) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
+                                <li v-for="(image_data, image_name, index) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
                                             :class="{isSelected:image_data[1]}">
                                     <img :src="image_data[0]"/>
                                 </li>
                             </ul>
                         </div>
-                        <div style="width: 100%;margin: 3px 5px;">
+                        <div class="flex_row_bewteen" style="width: 100%;margin: 3px 5px;">
                             <span class="range_label">Current Selected: {{ this.current_selected_num }}</span>
+                            <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
+                            @click="handleBtnConfirm">
+                            Confirm</el-button>
                         </div>
-                        <el-divider></el-divider>
                         
                     </div>
                 </div>
@@ -206,11 +216,8 @@
                 /*  
                     {image_name:[image_data, false], ...}
                 */
-                delete_simple_imageInfo:[],
-                delete_hard_imageInfo:[],
-
                 shown_imageInfo:{},
-                delete_imageInfo:[],
+                selected_imageInfo:[],
 
                 checkAll: false,
                 allOptions:[],
@@ -235,6 +242,7 @@
                 switch_value:false,
                 tabsName:"first",
                 difficulty_radio:'Simple',
+                filter_mode:'Delete',
           }
       },
       mounted:function(){
@@ -424,12 +432,20 @@
             this.simple_selected_num = 0;
             this.$forceUpdate();
           },
-          Submit(){
+          handleBtnConfirm(){
             var delete_images = [];
-            for(let key in this.shown_hard_imageInfo){
-                if(!this.delete_hard_imageInfo.includes(key)){
-                    delete_images.push(key);
+            if(this.filter_mode==false){
+                for(let key in this.selected_imageInfo){
+                    delete_images.push(this.selected_imageInfo[key]);
                 }
+            }else{
+                var shown_keys = Object.keys(this.shown_imageInfo);
+                for(let key in shown_keys){
+                    if(!this.selected_imageInfo.includes(shown_keys[key])){
+                        delete_images.push(shown_keys[key]);
+                    }
+                }
+                console.log(delete_images);
             }
             fetch('http://127.0.0.1:5000/delete_image', {
                 method: 'POST', // 使用POST方法
@@ -444,25 +460,27 @@
                 .then(data => console.log(data)) // 处理解析后的数据
                 .catch(error => console.error('Error:', error)); // 处理错误
             for(const value of delete_images){
-                delete this.similar_hard_imageInfo[value];
-                delete this.shown_hard_imageInfo[value];
+                if(this.difficulty_radio=="Simple"){
+                    delete this.similar_simple_imageInfo[value];
+                }else{
+                    delete this.similar_hard_imageInfo[value];
+                }
+                delete this.shown_imageInfo[value];
             }
-            for(const value of this.delete_hard_imageInfo){
-                this.similar_hard_imageInfo[value][1] = false;
-                this.shown_hard_imageInfo[value][1] = false;
-            }
-            this.delete_hard_imageInfo.length = 0;
-            this.hard_selected_num = 0;
+            if(this.filter_mode==true)
+                for(let key in this.shown_imageInfo)this.shown_imageInfo[key][1] = false;
+            this.selected_imageInfo.length = 0;
+            this.current_selected_num = 0;
             this.$forceUpdate();
           },
           choose_image(image_name){
-            if(this.delete_imageInfo.includes(image_name)){
-                let indexx = this.delete_imageInfo.indexOf(image_name);
-                this.delete_imageInfo.splice(indexx, 1);
+            if(this.selected_imageInfo.includes(image_name)){
+                let indexx = this.selected_imageInfo.indexOf(image_name);
+                this.selected_imageInfo.splice(indexx, 1);
                 this.shown_imageInfo[image_name][1] = false;
                 this.current_selected_num--;
             }else{
-                this.delete_imageInfo.push(image_name);
+                this.selected_imageInfo.push(image_name);
                 this.shown_imageInfo[image_name][1] = true;
                 this.current_selected_num++;
             }
