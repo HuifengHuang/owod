@@ -9,14 +9,17 @@
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 25%;flex-shrink: 0;">
-                    <div class="flex_row_center" style="width: 100%;height:40%;">
-                        <div style="width: 320px; height:320px;background-color: ghostwhite">
+                <div class="item1" style="width: 19%;flex-shrink: 0;">
+                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
+                        <span class="view_title">Label Annotation</span>
+                    </div>
+                    <el-divider></el-divider>
+                    <div class="flex_row_center" style="width: 100%;height:38%;border: 1px solid #e9e9e9;">
+                        <div style="width: 320px; height:320px;">
                             <svg id="svg" style="width: 320px; height:320px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
                         </div>
                     </div>
-
                     <div class="flex_row_bewteen" style="width: 100%;height: 6%;">
                         <span class="view_title">Image Shown</span>
                         <el-switch
@@ -26,17 +29,17 @@
                         </el-switch>
                     </div>
 
-                    <div style="width: 100%;height:43%;">
-                        <el-tabs v-model="tabsName" type="border-card" @tab-click="handleClick" stretch='true'>
+                    <div style="width: 100%;height:37%;">
+                        <el-tabs v-model="tabsName" type="border-card" :stretch="true">
                             <el-tab-pane label="selected images" name="first">
-                                <ul class="container_ul" style="width: 100%;height: 300px;">
+                                <ul class="container_ul" style="width: 100%;height: 250px;">
                                     <li v-for="(image, index) in chosen_imageData" :key="index">
                                         <img :src="image" @click="get_similar_images(index)" :class="{pointer:switch_value}"/>
                                     </li>
                                 </ul>
                             </el-tab-pane>                                                                     
                             <el-tab-pane label="similar images" name="second" :disabled="!switch_value">
-                                <ul class="container_ul" style="width: 100%;height: 300px;">
+                                <ul class="container_ul" style="width: 100%;height: 250px;">
                                     <li v-for="(image, index) in similar_imageData" :key="index">
                                         <img :src="image"/>
                                     </li>
@@ -58,76 +61,68 @@
                     </div>
                 </div>
 
-                <div class="item2" style="flex-grow: 1;">
-                    <div class="flex_row_bewteen" style="width: 100%;height: 6%;">
+                <div class="item2" style="flex-grow: 1;height: 100%;">
+                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
                         <span class="view_title">Manually Rejection And Screening</span>
                     </div>
                     <el-divider></el-divider>
                     <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="describe_label" style="margin-left: 30px;">Similarity Scale</span>
-                        <div class="flex_row_bewteen" style="height: 100%;">
-                            <el-radio v-model="difficulty_radio" label="simple" border class="difficulty_radio">Simple</el-radio>
-                            <el-radio v-model="difficulty_radio" label="hard" border class="difficulty_radio">Hard</el-radio>
+                        <span class="describe_label" style="margin-left: 30px;">Similarity Density</span>
+                        <div class="flex_row_bewteen" style="height: 100%;width: 30%;">
+                            <el-radio-group class="difficulty_radio_group" v-model="difficulty_radio" @input="difficulty_change">
+                                <el-radio label="Simple" border class="difficulty_radio">Simple</el-radio>
+                                <el-radio label="Hard" border class="difficulty_radio">Hard</el-radio>
+                            </el-radio-group>
                         </div>
                     </div>
 
-                    <div style="position: relative; width: 100%;height: 35%;">
-                        <div style="width: 85%;margin: 0 auto;">
+                    <div style="position: relative; width: 100%;height: 30%;">
+                        <div style="width: 100%;height: 80%;margin: 15px auto;">
+                            <div id="svg_container" style="width: 85%;height: 100%;margin: 0 auto;">
+                                <svg v-show="this.difficulty_radio=='Simple'" id="svg_simple" class="full_fill" xmlns="http://www.w3.org/2000/svg">
+                                </svg>
+                                <svg v-show="this.difficulty_radio=='Hard'" id="svg_hard" class="full_fill" xmlns="http://www.w3.org/2000/svg">
+                                </svg>
+                            </div>
+                        </div>
+                        <div style="width: 85%;margin: -30px auto;">
                             <el-slider  v-model="similarity_value"
                                 range
                                 :step="0.005"
                                 :min="0"
                                 :max="1"
-                                @change="handleSimpleSlider"></el-slider>
+                                :show-tooltip="false"
+                                @change="handleSliderChange"
+                                @input="handleSliderInput"
+                                style="margin: 0 10px;"></el-slider>
                         </div>
-                        <div style="position: absolute;width: 100%;height: 80%;margin: -15px auto;">
-                            <div style="width: 85%;height: 100%;margin: 0 auto;">
-                                <svg v-show="this.difficulty_radio=='simple'" id="svg_simple" class="full_fill" xmlns="http://www.w3.org/2000/svg">
-                                </svg>
-                                <svg v-show="this.difficulty_radio=='hard'" id="svg_hard" class="full_fill" xmlns="http://www.w3.org/2000/svg">
-                                </svg>
-                            </div>
+                        <div style="width: 85%;margin: 30px auto;">
+                            <span class="range_label">Current Value:{{ this.real_value_left }} - {{ this.real_value_right }}</span>
                         </div>
                     </div>
 
-                    <div class="flex_between" style="flex-direction: column;height: 580px;width: 100%;">
-                        <el-collapse accordion>
-                            <el-collapse-item title="Simple" name="1">
-                                <el-divider></el-divider>
-                                <div class="flex_column_center" style="width: 100%;height: 100%;">
-                                    <div class="flex_between" style="padding: 10px;">
-                                        <div style="margin-left:50px;width: 100%;">
-                                            <el-slider  v-model="simple_similar_value"
-                                                show-stops
-                                                :step="0.005"
-                                                :min="0.28"
-                                                :max="0.34"
-                                                @change="handleSimpleSlider"></el-slider>
-                                        </div>
-                                        <div class="flex_column_center">
-                                            <label style="font-size: medium;">selected number：{{this.simple_selected_num}}</label>
-                                        </div>
-                                        <div class="flex_column_center" style="width: 100px;height: 40px;">
-                                            <el-button type="primary" plain style="margin: 10px;" @click="Delete()">Delete</el-button>
-                                        </div>
-                                    </div>
-                                    <ul class="container_ul" style="height: 360px;">
-                                        <li v-for="(image_data, image_name) in shown_simple_imageInfo" :key="image_name" @click="choose_image_simple(image_name)"
-                                                    :class="{isSelected:image_data[1]}">
-                                            <img :src="image_data[0]"/>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </el-collapse-item>
-                        </el-collapse>
+                    <div class="flex_column_start" style="height: 60%;width: 100%;margin-top: 50px;">
+                        <el-divider></el-divider>
+                        <div style="width: 100%;margin: 10px 30px;">
+                            <span class="describe_label">{{ this.difficulty_radio }} Group</span>
+                        </div>
+                        <div class="flex_column_center" style="width: 100%;height: 70%;">
+                            <ul class="container_ul" style="height: 360px;">
+                                <li v-for="(image_data, image_name) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
+                                            :class="{isSelected:image_data[1]}">
+                                    <img :src="image_data[0]"/>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
                 <div class="item3" style="width: 25%;flex-shrink: 0;">
-                    <div class="flex_column_between" style="width: 100%;height: 48%;">
-                        <div style="width: 100%;height: 5%;display: flex;">
-                            <p class="text_distribe" style="padding: 3px;">对象描述</p>
+                    <div class="flex_column_start" style="width: 100%;height: 50%;">
+                        <div class="flex_row_bewteen" style="width: 100%;height: 10%;">
+                            <span class="view_title">Object Description</span>
                         </div>
+                        <el-divider></el-divider>
                         <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: ghostwhite;">
                             <el-checkbox-group v-model="selectedOptions" @change="handleCheckedCitiesChange">
                                 <el-checkbox v-for="option in options" :label="option" :key="option">{{option}}</el-checkbox>
@@ -144,10 +139,12 @@
                             </div>
                         </div>
                     </div>
+                    <div style="width: 106%;height: 3px;background-color: #e9e9e9;margin: 0 0 0 -20px;"></div>
                     <div class="flex_column_center" style="width: 100%;height: 50%;">
-                        <div style="width: 100%;height: 5%;display: flex;">
-                            <p class="text_distribe" style="padding: 3px;">检测结果</p>
+                        <div class="flex_row_bewteen" style="width: 100%;height: 10%;">
+                            <span class="view_title">Detection Result</span>
                         </div>
+                        <el-divider></el-divider>
                         <div style="position:relative;width: 100%;height: 80%;background-color: ghostwhite;">
                             <!-- <el-tree :data="results" :props="defaultProps"></el-tree> -->
                             <div v-if="result_overall_shown" class="checkbox-group" style="position: absolute;overflow: auto;width: 100%;height: 100%;">
@@ -183,8 +180,9 @@
     import * as d3 from "d3";
     import lasso from "./d3-lasso";
     import $ from "jquery";
+    import { ref } from 'vue';
     import {generateDistinctColors, colors_50} from './color.js';
-    import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown} from "./common.js";
+    import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown ,density_shown} from "./common.js";
   
     export default {
       name: 'vue-owod',
@@ -197,14 +195,17 @@
                 similar_imageData:[],
 
                 similar_simple_imageInfo:{},
-                shown_simple_imageInfo:{},
                 similar_hard_imageInfo:{},
-                shown_hard_imageInfo:{},
+                similarities_simple:[],
+                similarities_hard:[],
                 /*  
                     {image_name:[image_data, false], ...}
                 */
                 delete_simple_imageInfo:[],
                 delete_hard_imageInfo:[],
+
+                shown_imageInfo:{},
+                delete_imageInfo:[],
 
                 checkAll: false,
                 allOptions:[],
@@ -219,13 +220,16 @@
                 result_single_shown: true,
 
                 similarity_value:[0,1],
+                real_value_left:0,
+                real_value_right:1,
+
+                simple_similar_value:[0,1],
 
                 className:'',
-                simple_selected_num:0,
-                hard_selected_num:0,
+                current_selected_num:0,
                 switch_value:false,
                 tabsName:"first",
-                difficulty_radio:'simple',
+                difficulty_radio:'Simple',
           }
       },
       mounted:function(){
@@ -379,13 +383,17 @@
                     for(let i in data[0]){
                         this.similar_simple_imageInfo[data[0][i]] = [];
                         this.fetch_images(data[0][i],"similar_simple_imageData");
-                        this.handleSimpleSlider();
                     }
                     for(let i in data[1]){
                         this.similar_hard_imageInfo[data[1][i]] = [];
                         this.fetch_images(data[1][i],"similar_hard_imageData");
-                        this.handleHardSlider();
                     }
+                    this.set_similarities();
+                    density_shown("svg_simple", this.similarities_simple);
+                    density_shown("svg_hard", this.similarities_hard);
+                    this.difficulty_change();
+                    this.handleSliderInput();
+                    this.handleSliderChange();
                 })
                 .catch(error => console.error('Error:', error));
             this.$forceUpdate();
@@ -442,31 +450,16 @@
             this.hard_selected_num = 0;
             this.$forceUpdate();
           },
-          choose_image_simple(image_name){
-            if(this.delete_simple_imageInfo.includes(image_name)){
-                let indexx = this.delete_simple_imageInfo.indexOf(image_name);
-                this.delete_simple_imageInfo.splice(indexx, 1);
-                this.similar_simple_imageInfo[image_name][1] = false;
-                this.shown_simple_imageInfo[image_name][1] = false;
-                this.simple_selected_num--;
+          choose_image(image_name){
+            if(this.delete_imageInfo.includes(image_name)){
+                let indexx = this.delete_imageInfo.indexOf(image_name);
+                this.delete_imageInfo.splice(indexx, 1);
+                this.shown_imageInfo[image_name][1] = false;
+                this.current_selected_num--;
             }else{
-                this.delete_simple_imageInfo.push(image_name);
-                this.similar_simple_imageInfo[image_name][1] = true;
-                this.shown_simple_imageInfo[image_name][1] = true;
-                this.simple_selected_num++;
-            }
-            this.$forceUpdate();
-          },
-          choose_image_hard(image_name){
-            if(this.delete_hard_imageInfo.includes(image_name)){
-                let indexx = this.delete_hard_imageInfo.indexOf(image_name);
-                this.delete_hard_imageInfo.splice(indexx, 1);
-                this.similar_hard_imageInfo[image_name][1] = false;
-                this.hard_selected_num--;
-            }else{
-                this.delete_hard_imageInfo.push(image_name);
-                this.similar_hard_imageInfo[image_name][1] = true;
-                this.hard_selected_num++;
+                this.delete_imageInfo.push(image_name);
+                this.shown_imageInfo[image_name][1] = true;
+                this.current_selected_num++;
             }
             this.$forceUpdate();
           },
@@ -522,16 +515,18 @@
                 this.checkAll = checkedCount === this.options.length;
                 this.isIndeterminate = checkedCount > 0 && checkedCount < this.options.length;
           },
-          handleSimpleSlider(){
-            let min = this.simple_similar_value;
-            let max = 1;
-            this.shown_simple_imageInfo = {};
-            for(let key in this.similar_simple_imageInfo){
+          handleSliderChange(){
+            this.shown_imageInfo = {};
+            var similar_images = {};
+            if(this.difficulty_radio == "Simple")similar_images = this.similar_simple_imageInfo;
+            else similar_images = this.similar_hard_imageInfo;
+            for(let key in similar_images){
                 let value = getSimilarValue(key);
-                if(value>=min && value<=max){
-                    this.shown_simple_imageInfo[key] = this.similar_simple_imageInfo[key];
+                if(value >= this.real_value_left && value <= this.real_value_right){
+                    this.shown_imageInfo[key] = similar_images[key];
                 }
             }
+            console.log(this.shown_imageInfo);
             this.$forceUpdate();
           },
           switch_change(){
@@ -540,7 +535,34 @@
                 this.similar_imageData = this.similar_imageInfo = [];
                 this.$forceUpdate();
             }
-          }
+          },
+          set_similarities(){
+            this.similarities_simple = [];
+            this.similarities_hard = [];
+            var image_names = Object.keys(this.similar_simple_imageInfo);
+            for(let i in image_names){
+                this.similarities_simple.push(getSimilarValue(image_names[i]));
+            }
+            image_names = Object.keys(this.similar_hard_imageInfo);
+            for(let i in image_names){
+                this.similarities_hard.push(getSimilarValue(image_names[i]));
+            }
+          },
+          handleSliderInput(){
+            var similarities = [];
+            if(this.difficulty_radio == "Simple")similarities = this.similarities_simple;
+            else similarities = this.similarities_hard;
+            var v_min = Math.min(...similarities);
+            var v_max = Math.max(...similarities);
+            console.log(v_min);
+            this.real_value_left = (v_min + this.similarity_value[0] * (v_max - v_min)).toFixed(4);
+            this.real_value_right = (v_min + this.similarity_value[1] * (v_max - v_min)).toFixed(4);
+            this.$forceUpdate();
+          },
+          difficulty_change(){
+            this.handleSliderChange();
+            this.$forceUpdate();
+          },
         }
     }
   </script>
