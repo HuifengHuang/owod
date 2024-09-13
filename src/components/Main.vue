@@ -108,15 +108,15 @@
                             <el-switch
                                 style="display: block;margin-right: 50px;"
                                 v-model="filter_mode"
-                                active-color="#13ce66"
-                                inactive-color="#ff4949"
+                                active-color="#add8e6"
+                                inactive-color="#808080"
                                 active-text="Reserve"
                                 inactive-text="Delete">
                             </el-switch>
                         </div>
                         <div class="flex_column_center" style="width: 100%;height: 70%;margin-bottom: 5px;">
                             <ul class="container_ul" style="height: 360px;">
-                                <li v-for="(image_data, image_name, index) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
+                                <li v-for="(image_data, image_name) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
                                             :class="{isSelected:image_data[1]}">
                                     <img :src="image_data[0]"/>
                                 </li>
@@ -158,27 +158,29 @@
                     <div style="width: 106%;height: 3px;background-color: #e9e9e9;margin: 0 0 0 -20px;"></div>
                     
                     <div class="flex_column_center" style="width: 100%;height: 50%;">
-                        <div class="flex_row_bewteen" style="width: 100%;height: 10%;">
+                        <div class="flex_row_bewteen" style="width: 100%;height: 10%;margin-top: -30px;">
                             <span class="view_title">Detection Result</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="position:relative;width: 100%;height: 80%;background-color: ghostwhite;">
-                            <!-- <el-tree :data="results" :props="defaultProps"></el-tree> -->
-                            <div v-if="result_overall_shown" class="checkbox-group" style="position: absolute;overflow: auto;width: 100%;height: 100%;">
-                                <label v-for="(ap, cls) in results" :key="cls">
-                                        <div>
-                                            <h3>{{ cls }}</h3>
-                                            <h5 style="color: purple;">{{ ap }}</h5>
-                                        </div>
-                                </label>
-                            </div>
-                            <div style="position: absolute;overflow: auto;width: 100%; height:100%;">
-                                <svg v-show="result_single_shown" id="result_svg" xmlns="http://www.w3.org/2000/svg">
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="flex_column_center">
-                            <el-button type="primary" plain @click="change_result()" style="margin: 10px;">切换结果</el-button>
+                            <el-tabs v-model="result_show" type="border-card" @tab-click="change_result" :stretch="true">
+                                <el-tab-pane label="Overall" name="first">
+                                    <div class="checkbox-group" style="overflow: auto;width: 100%;height: 280px;">
+                                        <label v-for="(ap, cls) in results" :key="cls">
+                                                <div>
+                                                    <h3>{{ cls }}</h3>
+                                                    <h5 style="color: purple;">{{ ap }}</h5>
+                                                </div>
+                                        </label>
+                                    </div>
+                                </el-tab-pane>
+                                <el-tab-pane label="Single" name="second">
+                                    <div style="overflow: auto;width: 100%; height: 280px;">
+                                        <svg id="result_svg" xmlns="http://www.w3.org/2000/svg">
+                                        </svg>
+                                    </div>
+                                </el-tab-pane>
+                            </el-tabs>
                         </div>
                     </div>
                 </div>
@@ -227,6 +229,7 @@
                 selectedOptions: [],
                 isIndeterminate: true,
 
+                result_show:'first',
                 results:{},
                 results_overall:{},
                 results_single:{},

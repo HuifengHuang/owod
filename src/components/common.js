@@ -29,10 +29,10 @@ import * as d3 from "d3";
 export function single_class_shown(results_single){
     const keys = Object.keys(results_single);
     const values = Object.values(results_single);
-    const width = 450;
-    const marginTop = 20;
+    const width = 420;
+    const marginTop = 10;
     const marginRight = 10;
-    const marginBottom = 0;
+    const marginBottom = 10;
     const marginLeft = 100;
     const height = values.length * 20 + marginTop + marginBottom;
     const rectHeight = 15;
@@ -63,9 +63,12 @@ export function single_class_shown(results_single){
     
     //竖向坐标轴
     svg.append("g")
+        .attr('class', 'axis')
         .attr("transform", `translate(${marginLeft}, 0)`)
         .call(d3.axisLeft(yKeyScale).tickSizeOuter(0))
         .attr("font-size", 10)
+    svg.selectAll('.axis path') // 选择所有的轴线路径
+        .style('stroke', 'none'); // 设置stroke为none，隐藏轴线
 
     svg.selectAll(".tick text")
         .style("font-size", "12px");
