@@ -4,14 +4,14 @@
         <div class="content">
             <div class="Head">
                 <div class="flex_column_center" style="height: 100%;width: 20%;">
-                    <span class="head_title">Manual annotation</span>
+                    <span class="head_title">###Title###todo</span>
                 </div>
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 19%;flex-shrink: 0;">
+                <div class="item1" style="width: 20%;flex-shrink: 0;">
                     <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="view_title">Label Annotation</span>
+                        <span class="view_title">Label Recommand</span>
                     </div>
                     <el-divider></el-divider>
                     <div class="flex_row_center" style="width: 100%;height:38%;border: 1px solid #e9e9e9;">
@@ -21,17 +21,18 @@
                         </div>
                     </div>
                     <div class="flex_row_bewteen" style="width: 100%;height: 6%;">
-                        <span class="view_title">Image Shown</span>
+                        <span class="describe_label" style="margin-left: 20px;">Image Shown</span>
                         <el-switch
                         v-model="switch_value"
                         @change="switch_change"
-                        active-text="get similar image">
+                        active-text="Related-image recommand"
+                        style="width: 40%;">
                         </el-switch>
                     </div>
 
                     <div style="width: 100%;height:37%;">
                         <el-tabs v-model="tabsName" type="border-card" :stretch="true">
-                            <el-tab-pane label="selected images" name="first">
+                            <el-tab-pane label="circled images" name="first">
                                 <ul class="container_ul" style="width: 100%;height: 250px;">
                                     <li v-for="(image, index) in chosen_imageData" :key="index">
                                         <img :src="image" @click="get_similar_images(index)" :class="{pointer:switch_value}"/>
@@ -63,7 +64,7 @@
 
                 <div class="item2" style="flex-grow: 1;height: 100%;">
                     <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="view_title">Manually Rejection And Screening</span>
+                        <span class="view_title">Image Annotation Selection</span>
                     </div>
                     <el-divider></el-divider>
                     <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
@@ -104,7 +105,7 @@
                     <div class="flex_column_start" style="height: 60%;width: 100%;margin-top: 50px;">
                         <el-divider></el-divider>
                         <div class="flex_row_bewteen"  style="width: 100%;margin: 10px 30px;">
-                            <span class="describe_label">{{ this.difficulty_radio }} Group</span>
+                            <span class="describe_label">{{ this.difficulty_radio }} Images</span>
                             <el-switch
                                 style="display: block;margin-right: 50px;"
                                 v-model="filter_mode"
@@ -135,7 +136,7 @@
                 <div class="item3" style="width: 25%;flex-shrink: 0;">
                     <div class="flex_column_start" style="width: 100%;height: 50%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 10%;">
-                            <span class="view_title">Object Description</span>
+                            <span class="view_title">LLM Interaction</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: ghostwhite;">
@@ -159,7 +160,7 @@
                     
                     <div class="flex_column_center" style="width: 100%;height: 50%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 10%;margin-top: -30px;">
-                            <span class="view_title">Detection Result</span>
+                            <span class="view_title">Evaluation results</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="position:relative;width: 100%;height: 80%;background-color: ghostwhite;">
