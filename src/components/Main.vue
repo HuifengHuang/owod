@@ -100,7 +100,7 @@
                         </div>
                     </div>
 
-                    <div class="flex_column_start" style="height: 60%;width: 100%;margin-top: 50px;">
+                    <div class="flex_column_start" style="height: 60%;width: 100%;margin-top: 30px;padding-top: 19px;">
                         <el-divider></el-divider>
                         <div class="flex_row_bewteen"  style="width: 100%;margin: 10px 30px;">
                             <span class="describe_label">{{ this.difficulty_radio }} Images</span>
