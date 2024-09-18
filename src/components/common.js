@@ -119,7 +119,7 @@ export function density_shown(svg_name, similarities){
                     .range([margin.left, Width + margin.left]);
     var yScale = d3.scaleLinear()
                     .range([Height + margin.top, margin.top]);
-    var density = kernelDensityEstimator(kernelEpanechnikov(0.001), xScale.ticks(80))(similarities);
+    var density = kernelDensityEstimator(kernelEpanechnikov(0.003), xScale.ticks(80))(similarities);
     yScale.domain([0, d3.max(density, function(d) { return d[1]; })]);
     svg.append("path")
         .datum(density)

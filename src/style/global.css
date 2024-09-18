@@ -39,7 +39,6 @@
 }
 
 .item1,.item2,.item3{
-    float: left;
     height: 100%;
     display: flex;
     flex-direction:column;

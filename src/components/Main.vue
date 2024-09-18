@@ -9,37 +9,35 @@
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 20%;flex-shrink: 0;">
-                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
+                <div class="item1" style="width: 19%;flex-shrink: 0;">
+                    <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
                         <span class="view_title">Label Recommand</span>
                     </div>
                     <el-divider></el-divider>
-                    <div class="flex_row_center" style="width: 100%;height:38%;border: 1px solid #e9e9e9;">
-                        <div style="width: 320px; height:320px;">
-                            <svg id="svg" style="width: 320px; height:320px;" xmlns="http://www.w3.org/2000/svg">
+                    <div class="flex_row_bewteen" style="width: 100%;height: 4%;">
+                        <span class="describe_label" style="margin-left: 20px;">Cluster Recommand</span>
+                    </div>
+                    <div class="flex_row_center" style="width: 100%;height:35%;">
+                        <div style="width: 300px; height:300px;">
+                            <svg id="svg" style="width: 300px; height:300px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
                         </div>
                     </div>
-                    <div class="flex_row_bewteen" style="width: 100%;height: 6%;">
-                        <span class="describe_label" style="margin-left: 20px;">Image Shown</span>
-                        <el-switch
-                        v-model="switch_value"
-                        @change="switch_change"
-                        active-text="Related-image recommand"
-                        style="width: 40%;">
-                        </el-switch>
-                    </div>
 
+                    <el-divider></el-divider>
+                    <div class="flex_row_bewteen" style="width: 100%;height: 4%;">
+                        <span class="describe_label" style="margin-left: 20px;">Image Shown</span>
+                    </div>
                     <div style="width: 100%;height:37%;">
                         <el-tabs v-model="tabsName" type="border-card" :stretch="true">
                             <el-tab-pane label="circled images" name="first">
                                 <ul class="container_ul" style="width: 100%;height: 250px;">
                                     <li v-for="(image, index) in chosen_imageData" :key="index">
-                                        <img :src="image" @click="get_similar_images(index)" :class="{pointer:switch_value}"/>
+                                        <img :src="image" @click="get_similar_images(index)" style="cursor: pointer;"/>
                                     </li>
                                 </ul>
                             </el-tab-pane>                                                                     
-                            <el-tab-pane label="similar images" name="second" :disabled="!switch_value">
+                            <el-tab-pane label="similar images" name="second">
                                 <ul class="container_ul" style="width: 100%;height: 250px;">
                                     <li v-for="(image, index) in similar_imageData" :key="index">
                                         <img :src="image"/>
@@ -63,7 +61,7 @@
                 </div>
 
                 <div class="item2" style="flex-grow: 1;height: 100%;">
-                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
+                    <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
                         <span class="view_title">Image Annotation Selection</span>
                     </div>
                     <el-divider></el-divider>
@@ -135,7 +133,7 @@
 
                 <div class="item3" style="width: 25%;flex-shrink: 0;">
                     <div class="flex_column_start" style="width: 100%;height: 50%;">
-                        <div class="flex_row_bewteen" style="width: 100%;height: 10%;">
+                        <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
                             <span class="view_title">LLM Interaction</span>
                         </div>
                         <el-divider></el-divider>
@@ -144,14 +142,17 @@
                                 <el-checkbox v-for="option in options" :label="option" :key="option">{{option}}</el-checkbox>
                             </el-checkbox-group>
                         </div>
-                        <div style="display: flex;flex-direction: column;justify-content: flex-start; width: 100%;height: 25%;">
-                            <div style="width: 100%;height: 40px;">
+                        <div class="flex_column_start" style="width: 100%;height: 25%;">
+                            <div style="width: 100%;height: 30px;">
                                 <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin-top: 10px;">
-                                    全选
+                                    Select All
                                 </el-checkbox>
                             </div>
-                            <div class="flex_column_center" style="width: 100%;height: 40px;">
-                                <el-button type="primary" plain @click="describe_submit()" style="margin: 10px;">确认提交</el-button>
+                            <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
+                                <span class="range_label">Current Value:{{ selectedOptions.length }}</span>
+                                <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
+                                @click="describe_submit()">
+                                Submit</el-button>
                             </div>
                         </div>
                     </div>
@@ -159,7 +160,7 @@
                     <div style="width: 106%;height: 3px;background-color: #e9e9e9;margin: 0 0 0 -20px;"></div>
                     
                     <div class="flex_column_center" style="width: 100%;height: 50%;">
-                        <div class="flex_row_bewteen" style="width: 100%;height: 10%;margin-top: -30px;">
+                        <div class="flex_row_bewteen" style="width: 100%;height: 40px;margin-top: -30px;">
                             <span class="view_title">Evaluation results</span>
                         </div>
                         <el-divider></el-divider>
@@ -245,7 +246,6 @@
 
                 className:'',
                 current_selected_num:0,
-                switch_value:false,
                 tabsName:"first",
                 difficulty_radio:'Simple',
                 filter_mode:'Delete',
