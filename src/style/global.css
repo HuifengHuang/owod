@@ -28,7 +28,7 @@
 .head_title{
     font-size: xx-large;
     color: white;
-    font-family: SimHei;
+    font-family: Serif;
     margin-left: 30px;
 }
 
@@ -55,7 +55,7 @@
 .view_title{
     font-size: x-large;
     color: #303133;
-    font-family: SimHei;
+    font-family: Sans-serif;
     margin-left: 20px;
     font-weight: bold;
 }
@@ -63,14 +63,14 @@
 .describe_label{
     font-size: large;
     color: #606266;
-    font-family: SimHei;
+    font-family: Sans-serif;
     font-weight: bold;
 }
 
 .range_label{
     font-size: medium;
     color: #909399;
-    font-family: SimHei;
+    font-family: Sans-serif;
     font-weight: bold;
     margin: 0 10px;
 }
@@ -219,7 +219,7 @@ img {
     margin-left: 10px;
     margin-right: 25px;
     margin-top: 15px;
-    width: 320px;
+    width: 380px;
     padding-left: 0px;
     font-size: large;
     display: flex;
@@ -227,7 +227,7 @@ img {
 }
 
 .el-checkbox__label {
-    max-width: 300px; /* 根据需要调整 */
+    max-width: 360px; /* 根据需要调整 */
     word-break: normal; /* 或者使用 word-break: break-all; */
     white-space: normal;
 }
@@ -247,20 +247,20 @@ img {
 /* 整个滚动条 */
 ::-webkit-scrollbar {
     /* 对应纵向滚动条的宽度 */
-    width: 10px;
+    width: 8px;
     /* 对应横向滚动条的宽度 */
-    height: 10px;
+    height: 8px;
 }
 
 /* 滚动条上的滚动滑块 */
 ::-webkit-scrollbar-thumb {
-    background-color: #49b1f5;
+    background-color: #888;
     border-radius: 32px;
 }
 
 /* 滚动条轨道 */
 ::-webkit-scrollbar-track {
-    background-color: #dbeffd;
+    background-color: #f1f1f1;
     border-radius: 32px;
 }
 
@@ -268,5 +268,5 @@ img {
     fill: steelblue;
 }
 .bar2 {
-    fill: orange;
+    fill: gray;
 }

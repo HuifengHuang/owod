@@ -36,23 +36,23 @@ export function single_class_shown(results_single_old, results_single_new){
         results.push(item);
     }
     const width = 420;
-    const marginTop = 10;
-    const marginRight = 10;
+    const marginTop = 20;
+    const marginRight = 50;
     const marginBottom = 10;
     const marginLeft = 100;
     const height = results.length * 30 + marginTop + marginBottom;
-    var svg = d3.select("#result_svg")
+    var svg = d3.select("#result_single_svg")
         .attr("width", width)
         .attr("height", height);
     
     var xScale = d3.scaleLinear()
         .domain([0,d3.max(results, d => Math.max(d.old, d.new))])
-        .range([marginLeft ,  width - marginLeft - marginRight]);
+        .range([0 ,  width - marginRight - marginLeft]);
 
     var fyScale = d3.scaleBand()
         .domain(results.map(d => d.name))
-        .range([0, height])
-        .padding(0.2)
+        .range([marginTop, height - marginBottom])
+        .padding(0.15)
 
     var yScale = d3.scaleBand()
         .domain(["old", "new"])
@@ -71,13 +71,26 @@ export function single_class_shown(results_single_old, results_single_new){
         ])
         .enter()
         .append("rect")
-        .attr("x", d => marginLeft)
+        .attr("x", marginLeft)
         .attr("y", d => yScale(d.key))
         .attr("width", d => xScale(d.value))
         .attr("height", yScale.bandwidth())
         .attr("class", d => d.key === "old" ? "bar" : "bar2");
 
+    const xAxis = d3.axisTop(xScale);
     const yAxis = d3.axisLeft(fyScale);
+
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(${marginLeft},${marginTop})`)
+        .call(xAxis)
+
+    svg.append("text")
+        .attr("transform", `translate(${marginLeft + 290}, ${marginTop - 5})`)
+        .text("mAP")
+        .attr("text-anchor", "middle")  // 设置文本水平居中对齐
+        .attr("dominant-baseline", "middle")  // 设置文本垂直居中对齐
+        .attr("font-size", "14px");
 
     svg.append("g")
       .attr("class", "y-axis")
@@ -88,70 +101,133 @@ export function single_class_shown(results_single_old, results_single_new){
 
     svg.selectAll(".tick text")
         .style("font-size", "12px");
+
+    svg.append("text")
+        .attr("transform", `translate(15, 10)`)
+        .text("Old")
+        .attr("class", "text_class");
+    svg.append("text")
+        .attr("transform", `translate(15, 22)`)
+        .text("New")
+        .attr("class", "text_class");
+    svg.append("rect")
+        .attr("x", 30)
+        .attr("y", 3)
+        .attr("width", 40)
+        .attr("height", 10)
+        .attr("class",  "bar2");
+    svg.append("rect")
+        .attr("x", 30)
+        .attr("y", 16)
+        .attr("width", 40)
+        .attr("height", 10)
+        .attr("class",  "bar");
+    svg.selectAll(".text_class")
+        .attr("text-anchor", "middle")  // 设置文本水平居中对齐
+        .attr("dominant-baseline", "middle")  // 设置文本垂直居中对齐
+        .attr("font-size", "12px");
 }
 
 export function overall_class_shown(results_overall){
     var results = [];
-    for(let key in results_single_old){
+    for(let key in results_overall){
         var item = {};
         item["name"] = key;
-        item["old"] = results_single_old[key];
-        item["new"] = results_single_new[key];
+        item["value"] = results_overall[key];
         results.push(item);
     }
     const width = 420;
-    const marginTop = 10;
+    const marginTop = 20;
     const marginRight = 10;
-    const marginBottom = 10;
-    const marginLeft = 100;
-    const height = results.length * 30 + marginTop + marginBottom;
-    var svg = d3.select("#result_svg")
+    const marginBottom = 30;
+    const marginLeft = 50;
+    const height = 240 + marginTop + marginBottom;
+    const rectWidth = 40;
+    var svg = d3.select("#result_overall_svg")
         .attr("width", width)
         .attr("height", height);
-    
-    var xScale = d3.scaleLinear()
-        .domain([0,d3.max(results, d => Math.max(d.old, d.new))])
-        .range([marginLeft ,  width - marginLeft - marginRight]);
 
-    var fyScale = d3.scaleBand()
-        .domain(results.map(d => d.name))
-        .range([0, height])
-        .padding(0.2)
+    var yScale = d3.scaleLinear()
+        .domain([0, d3.max(results, d => d.value)])
+        .range([height - marginBottom, marginTop])
 
-    var yScale = d3.scaleBand()
-        .domain(["old", "new"])
-        .range([0, fyScale.bandwidth()])
-        .padding(0.05);
-
-    svg.selectAll(".group")
+    svg.selectAll("rect")
         .data(results)
         .enter()
-        .append("g")
-        .attr("transform", d => `translate(0,${fyScale(d.name)})`)
-        .selectAll("rect")
-        .data(d => [
-            { key: "old", value: d.old },
-            { key: "new", value: d.new }
-        ])
-        .enter()
         .append("rect")
-        .attr("x", d => marginLeft)
-        .attr("y", d => yScale(d.key))
-        .attr("width", d => xScale(d.value))
-        .attr("height", yScale.bandwidth())
-        .attr("class", d => d.key === "old" ? "bar" : "bar2");
-
-    const yAxis = d3.axisLeft(fyScale);
+        .attr("x", function(d){
+            if(d.name == "Previous-old"){
+                return marginLeft + 40;
+            }else if(d.name == "Previous-new"){
+                return marginLeft + 80;
+            }else if(d.name == "Current"){
+                return marginLeft + 160;
+            }else if(d.name == "All"){
+                return marginLeft + 240;
+            }
+        })
+        .attr("y", d => yScale(d.value))
+        .attr("width", rectWidth)
+        .attr("height", d => yScale(0) - yScale(d.value))
+        .attr("class", d => d.name === "Previous-old" ? "bar2" : "bar");
 
     svg.append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(yAxis)
-      .select("path")  // 选择轴线 path 元素
-      .style("display", "none");  // 隐藏轴线
+        .attr("transform", `translate(${marginLeft + 20}, 0)`)
+        .call(d3.axisLeft(yScale));
 
-    svg.selectAll(".tick text")
-        .style("font-size", "12px");
+    const xScale = d3.scaleLinear()
+        .domain([0, 1000])  // 数据范围
+        .range([0, 500]);
+    svg.append("g")
+        .attr("transform", `translate(${marginLeft + 20}, ${height - marginBottom})`)
+        .call(d3.axisBottom(xScale).ticks(0));
+
+    svg.append("text")
+        .attr("transform", `translate(${marginLeft + 80}, ${height - marginBottom + 12})`)
+        .text("Previous")
+        .attr("class", "text_class");
+    svg.append("text")
+        .attr("transform", `translate(${marginLeft + 180}, ${height - marginBottom + 12})`)
+        .text("Current")
+        .attr("class", "text_class");
+    svg.append("text")
+        .attr("transform", `translate(${marginLeft + 260}, ${height - marginBottom + 12})`)
+        .text("All")
+        .attr("class", "text_class");
+
+    svg.append("text")
+        .attr("transform", `translate(${marginLeft + 200}, 10)`)
+        .text("Old")
+        .attr("class", "text_class");
+    svg.append("text")
+        .attr("transform", `translate(${marginLeft + 280}, 10)`)
+        .text("New")
+        .attr("class", "text_class");
+    svg.append("rect")
+        .attr("x", marginLeft + 215)
+        .attr("y", 3)
+        .attr("width", 40)
+        .attr("height", 10)
+        .attr("class",  "bar2");
+    svg.append("rect")
+        .attr("x", marginLeft + 295)
+        .attr("y", 3)
+        .attr("width", 40)
+        .attr("height", 10)
+        .attr("class",  "bar");
+
+    svg.append("text")
+        .attr("transform", `translate(${marginLeft + 5}, 10)`)
+        .text("mAP")
+        .attr("text-anchor", "middle")  // 设置文本水平居中对齐
+        .attr("dominant-baseline", "middle")  // 设置文本垂直居中对齐
+        .attr("font-size", "14px");
+
+
+    svg.selectAll(".text_class")
+        .attr("text-anchor", "middle")  // 设置文本水平居中对齐
+        .attr("dominant-baseline", "middle")  // 设置文本垂直居中对齐
+        .attr("font-size", "12px");
 }
 
 export function kernelDensityEstimator(kernel, X) {

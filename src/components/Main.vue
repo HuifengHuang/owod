@@ -4,7 +4,7 @@
         <div class="content">
             <div class="Head">
                 <div class="flex_row_bewteen" style="height: 100%;width: 100%;">
-                    <span class="head_title">###Title###todo</span>
+                    <span class="head_title">Towards Superior Data Supervision for Open-World Object Detection</span>
                     <el-button plain 
                     style="height: 30px;padding: 0;font-size: large;margin-right: 50px;width: 80px;font-weight: bold;"
                     @click="get_detection_results()">
@@ -58,7 +58,7 @@
                         </div>
                         <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 30px;">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
-                            @click="get_similars(),get_text_result(),get_detection_results(),handleSimpleSlider()">
+                            @click="get_similars(),get_text_result(),handleSimpleSlider()">
                             Annotate</el-button>
                         </div>
                     </div>
@@ -67,16 +67,16 @@
                 <div class="item2" style="flex-grow: 1;height: 100%;">
                     <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
                         <span class="view_title">Image Annotation Selection</span>
-                    </div>
-                    <el-divider></el-divider>
-                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="describe_label" style="margin-left: 30px;">Similarity Density</span>
                         <div class="flex_row_bewteen" style="height: 100%;width: 30%;">
                             <el-radio-group class="difficulty_radio_group" v-model="difficulty_radio" @input="difficulty_change">
                                 <el-radio label="Simple" border class="difficulty_radio">Simple</el-radio>
                                 <el-radio label="Hard" border class="difficulty_radio">Hard</el-radio>
                             </el-radio-group>
                         </div>
+                    </div>
+                    <el-divider></el-divider>
+                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
+                        <span class="describe_label" style="margin-left: 30px;">Similarity Density</span>
                     </div>
 
                     <div style="position: relative; width: 100%;height: 30%;">
@@ -141,7 +141,7 @@
                             <span class="view_title">LLM Interaction</span>
                         </div>
                         <el-divider></el-divider>
-                        <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: ghostwhite;">
+                        <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: #e9e9e9;">
                             <el-checkbox-group v-model="selectedOptions" @change="handleCheckedCitiesChange">
                                 <el-checkbox v-for="option in options" :label="option" :key="option">{{option}}</el-checkbox>
                             </el-checkbox-group>
@@ -171,18 +171,14 @@
                         <div style="position:relative;width: 100%;height: 80%;background-color: ghostwhite;">
                             <el-tabs v-model="result_show" type="border-card" @tab-click="change_result" :stretch="true">
                                 <el-tab-pane label="Overall" name="first">
-                                    <div class="checkbox-group" style="overflow: auto;width: 100%;height: 280px;">
-                                        <label v-for="(ap, cls) in results" :key="cls">
-                                                <div>
-                                                    <h3>{{ cls }}</h3>
-                                                    <h5 style="color: purple;">{{ ap }}</h5>
-                                                </div>
-                                        </label>
+                                    <div style="width: 100%; height: 280px;">
+                                        <svg id="result_overall_svg" xmlns="http://www.w3.org/2000/svg">
+                                        </svg>
                                     </div>
                                 </el-tab-pane>
                                 <el-tab-pane label="Single" name="second">
                                     <div style="overflow: auto;width: 100%; height: 280px;">
-                                        <svg id="result_svg" xmlns="http://www.w3.org/2000/svg">
+                                        <svg id="result_single_svg" xmlns="http://www.w3.org/2000/svg">
                                         </svg>
                                     </div>
                                 </el-tab-pane>
@@ -207,7 +203,7 @@
     import $ from "jquery";
     import { ref } from 'vue';
     import {generateDistinctColors, colors_50} from './color.js';
-    import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown ,density_shown} from "./common.js";
+    import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown ,density_shown, overall_class_shown} from "./common.js";
   
     export default {
       name: 'vue-owod',
@@ -516,6 +512,7 @@
                     this.results_single_new = data[2];
                     this.results = this.results_overall;
                     this.$forceUpdate();
+                    overall_class_shown(this.results_overall);
                     single_class_shown(this.results_single_old, this.results_single_new);
                 })
                 .catch(error => console.error('Error:', error));
