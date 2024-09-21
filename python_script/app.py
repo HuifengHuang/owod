@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify
 
 from flask_cors import CORS
 from data1 import getData
+from get_result import get_result_new
 from main_code import tsne_and_kmeans
 from main_code2 import find_similar_images, get_HardAndSimple, ChatWithLLM
 from result_view import get_result
@@ -90,8 +91,9 @@ def delete_image():
 
 @app.route('/detection_results', methods=["GET"])
 def get_detection_results():
-    print(get_result('result.json'))
-    return get_result('result.json')
+    file1 = "result_data1.json"
+    file2 = "result_data2.json"
+    return get_result_new(file1, file2)
 
 
 @app.route('/text_result/<class_name>', methods=["GET"])
@@ -99,16 +101,16 @@ def get_text_result(class_name):
     return ChatWithLLM(class_name, model_type='gpt-4o-ca')
 
 
-@app.route('/describe_submit', methods=["POST"])
-def describe_submit():
-    describes = request.get_json()
-    for key, value in describes.items():
-        file_path = os.path.join(key+"_images", "describes.txt")
-        with open(file_path, 'w', encoding="utf-8") as file:
-            file.write('\n'.join(str(i) for i in value))
-    return jsonify({
-        'message': 'Data received successfully!',
-    }), 200
+@app.route('/get_single_result', methods=["GET"])
+def get_single_result():
+  describes = request.get_json()
+  for key, value in describes.items():
+    file_path = os.path.join(key + "_images", "describes.txt")
+    with open(file_path, 'w', encoding="utf-8") as file:
+      file.write('\n'.join(str(i) for i in value))
+  return jsonify({
+    'message': 'Data received successfully!',
+  }), 200
 
 
 @app.route('/text_submit', methods=["GET"])

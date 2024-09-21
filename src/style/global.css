@@ -263,3 +263,10 @@ img {
     background-color: #dbeffd;
     border-radius: 32px;
 }
+
+.bar {
+    fill: steelblue;
+}
+.bar2 {
+    fill: orange;
+}

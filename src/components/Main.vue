@@ -3,8 +3,12 @@
     <div class="wrapper">
         <div class="content">
             <div class="Head">
-                <div class="flex_column_center" style="height: 100%;width: 20%;">
+                <div class="flex_row_bewteen" style="height: 100%;width: 100%;">
                     <span class="head_title">###Title###todo</span>
+                    <el-button plain 
+                    style="height: 30px;padding: 0;font-size: large;margin-right: 50px;width: 80px;font-weight: bold;"
+                    @click="get_detection_results()">
+                    Train</el-button>
                 </div>
             </div>
 
@@ -234,7 +238,8 @@
                 result_show:'first',
                 results:{},
                 results_overall:{},
-                results_single:{},
+                results_single_old:{},
+                results_single_new:{},
                 result_overall_shown: false,
                 result_single_shown: true,
 
@@ -507,10 +512,11 @@
                 .then(response => response.json())
                 .then(data => {
                     this.results_overall = data[0];
-                    this.results_single = data[1];
+                    this.results_single_old = data[1];
+                    this.results_single_new = data[2];
                     this.results = this.results_overall;
                     this.$forceUpdate();
-                    single_class_shown(this.results_single);
+                    single_class_shown(this.results_single_old, this.results_single_new);
                 })
                 .catch(error => console.error('Error:', error));
           },

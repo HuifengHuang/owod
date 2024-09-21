@@ -26,65 +26,132 @@ export function findMaxMin(dataset,index){
 }
 
 import * as d3 from "d3";
-export function single_class_shown(results_single){
-    const keys = Object.keys(results_single);
-    const values = Object.values(results_single);
+export function single_class_shown(results_single_old, results_single_new){
+    var results = [];
+    for(let key in results_single_old){
+        var item = {};
+        item["name"] = key;
+        item["old"] = results_single_old[key];
+        item["new"] = results_single_new[key];
+        results.push(item);
+    }
     const width = 420;
     const marginTop = 10;
     const marginRight = 10;
     const marginBottom = 10;
     const marginLeft = 100;
-    const height = values.length * 20 + marginTop + marginBottom;
-    const rectHeight = 15;
+    const height = results.length * 30 + marginTop + marginBottom;
     var svg = d3.select("#result_svg")
         .attr("width", width)
         .attr("height", height);
     
     var xScale = d3.scaleLinear()
-        .domain([0,100])
+        .domain([0,d3.max(results, d => Math.max(d.old, d.new))])
         .range([marginLeft ,  width - marginLeft - marginRight]);
+
+    var fyScale = d3.scaleBand()
+        .domain(results.map(d => d.name))
+        .range([0, height])
+        .padding(0.2)
+
     var yScale = d3.scaleBand()
-        .domain(values)
-        .range([marginTop, height-marginBottom])
-        .padding(0.3);
-    var yKeyScale = d3.scaleBand()
-        .domain(keys)
-        .range([marginTop, height-marginBottom])
-        .padding(0.3);
-    svg.selectAll("rect")
-        .data(values)
+        .domain(["old", "new"])
+        .range([0, fyScale.bandwidth()])
+        .padding(0.05);
+
+    svg.selectAll(".group")
+        .data(results)
+        .enter()
+        .append("g")
+        .attr("transform", d => `translate(0,${fyScale(d.name)})`)
+        .selectAll("rect")
+        .data(d => [
+            { key: "old", value: d.old },
+            { key: "new", value: d.new }
+        ])
         .enter()
         .append("rect")
-        .attr("x", marginLeft)
-        .attr("y", d => yScale(d))
-        .attr("width", d => xScale(d))
-        .attr("height", rectHeight)
-        .attr("fill", "steelblue");
-    
-    //竖向坐标轴
+        .attr("x", d => marginLeft)
+        .attr("y", d => yScale(d.key))
+        .attr("width", d => xScale(d.value))
+        .attr("height", yScale.bandwidth())
+        .attr("class", d => d.key === "old" ? "bar" : "bar2");
+
+    const yAxis = d3.axisLeft(fyScale);
+
     svg.append("g")
-        .attr('class', 'axis')
-        .attr("transform", `translate(${marginLeft}, 0)`)
-        .call(d3.axisLeft(yKeyScale).tickSizeOuter(0))
-        .attr("font-size", 10)
-    svg.selectAll('.axis path') // 选择所有的轴线路径
-        .style('stroke', 'none'); // 设置stroke为none，隐藏轴线
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${marginLeft},0)`)
+      .call(yAxis)
+      .select("path")  // 选择轴线 path 元素
+      .style("display", "none");  // 隐藏轴线
 
     svg.selectAll(".tick text")
         .style("font-size", "12px");
+}
+
+export function overall_class_shown(results_overall){
+    var results = [];
+    for(let key in results_single_old){
+        var item = {};
+        item["name"] = key;
+        item["old"] = results_single_old[key];
+        item["new"] = results_single_new[key];
+        results.push(item);
+    }
+    const width = 420;
+    const marginTop = 10;
+    const marginRight = 10;
+    const marginBottom = 10;
+    const marginLeft = 100;
+    const height = results.length * 30 + marginTop + marginBottom;
+    var svg = d3.select("#result_svg")
+        .attr("width", width)
+        .attr("height", height);
+    
+    var xScale = d3.scaleLinear()
+        .domain([0,d3.max(results, d => Math.max(d.old, d.new))])
+        .range([marginLeft ,  width - marginLeft - marginRight]);
+
+    var fyScale = d3.scaleBand()
+        .domain(results.map(d => d.name))
+        .range([0, height])
+        .padding(0.2)
+
+    var yScale = d3.scaleBand()
+        .domain(["old", "new"])
+        .range([0, fyScale.bandwidth()])
+        .padding(0.05);
+
+    svg.selectAll(".group")
+        .data(results)
+        .enter()
+        .append("g")
+        .attr("transform", d => `translate(0,${fyScale(d.name)})`)
+        .selectAll("rect")
+        .data(d => [
+            { key: "old", value: d.old },
+            { key: "new", value: d.new }
+        ])
+        .enter()
+        .append("rect")
+        .attr("x", d => marginLeft)
+        .attr("y", d => yScale(d.key))
+        .attr("width", d => xScale(d.value))
+        .attr("height", yScale.bandwidth())
+        .attr("class", d => d.key === "old" ? "bar" : "bar2");
+
+    const yAxis = d3.axisLeft(fyScale);
 
     svg.append("g")
-        .attr("fill", "white")
-        .attr("text-anchor", "end")
-        .selectAll()
-        .data(values)
-        .join("text")
-        .attr("x", (d) => marginLeft + xScale(d) + 25)
-        .attr("y", (d) => yScale(d) + yScale.bandwidth() / 2)
-        .attr("dy", "0.35em")
-        .attr("font-size", "12px")
-        .attr("fill", "black")
-        .text(d => d);
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${marginLeft},0)`)
+      .call(yAxis)
+      .select("path")  // 选择轴线 path 元素
+      .style("display", "none");  // 隐藏轴线
+
+    svg.selectAll(".tick text")
+        .style("font-size", "12px");
 }
 
 export function kernelDensityEstimator(kernel, X) {
