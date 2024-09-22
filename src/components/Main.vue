@@ -5,10 +5,28 @@
             <div class="Head">
                 <div class="flex_row_bewteen" style="height: 100%;width: 100%;">
                     <span class="head_title">Towards Superior Data Supervision for Open-World Object Detection</span>
-                    <el-button plain 
-                    style="height: 30px;padding: 0;font-size: large;margin-right: 50px;width: 80px;font-weight: bold;"
-                    @click="get_detection_results()">
-                    Train</el-button>
+                    <div  class="flex_row_bewteen" style="height: 100%;width: 18%;">
+                        <el-button plain 
+                            style="height: 30px;padding: 0;font-size: large;width: 180px;font-weight: bold;"
+                            @click="drawer = true">
+                            Annotated Classes</el-button>
+                        <el-button plain 
+                            style="height: 30px;padding: 0;font-size: large;margin-right: 50px;width: 80px;font-weight: bold;"
+                            @click="get_detection_results()">
+                            Train</el-button>
+                        <el-drawer
+                            title="Annotated Classes"
+                            :visible.sync="drawer"
+                            size="15%"
+                            :with-header="false">
+                            <div class="flex_column_start">
+                                <span class="view_title" style="margin-top: 10px;">Annotated Classes</span>
+                                <span class="describe_label" v-for="name in Annotated_classes"
+                                style="margin: 5px 20px;">{{name}}</span>
+                            </div>
+                        </el-drawer>
+                    </div>
+
                 </div>
             </div>
 
@@ -58,7 +76,7 @@
                         </div>
                         <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 30px;">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
-                            @click="get_similars(),get_text_result(),handleSimpleSlider()">
+                            @click="get_similars(),get_text_result()">
                             Annotate</el-button>
                         </div>
                     </div>
@@ -99,8 +117,9 @@
                                 @input="handleSliderInput"
                                 style="margin: 0 10px;"></el-slider>
                         </div>
-                        <div style="width: 85%;margin: 30px auto;">
-                            <span class="range_label">Current Value:{{ this.real_value_left }} - {{ this.real_value_right }}</span>
+                        <div class="flex_row_bewteen" style="width: 85%;margin: 30px auto;">
+                            <span class="range_label">Current Value: {{ this.real_value_left }} - {{ this.real_value_right }}</span>
+                            <span class="range_label" style="margin-right: 20px;">Candidate images count: {{ Object.keys(this.shown_imageInfo).length }}</span>
                         </div>
                     </div>
 
@@ -153,7 +172,7 @@
                                 </el-checkbox>
                             </div>
                             <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                                <span class="range_label">Current Value:{{ selectedOptions.length }}</span>
+                                <span class="range_label">Current Value: {{ selectedOptions.length }}</span>
                                 <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
                                 @click="describe_submit()">
                                 Submit</el-button>
@@ -246,6 +265,8 @@
                 simple_similar_value:[0,1],
 
                 className:'',
+                Annotated_classes:[],
+                drawer: false,
                 current_selected_num:0,
                 tabsName:"first",
                 difficulty_radio:'Simple',
@@ -500,6 +521,7 @@
                 .then(data => {
                     this.options = data;
                     this.allOptions = data;
+                    this.selectedOptions = [];
                 })
                 .catch(error => console.error('Error:', error));
           },
@@ -532,6 +554,10 @@
                 .then(response => response.json()) // 解析JSON格式的响应
                 .then(data => console.log(data)) // 处理解析后的数据
                 .catch(error => console.error('Error:', error)); // 处理错误
+            if(!this.Annotated_classes.includes(this.className)){
+                this.Annotated_classes.push(this.className);
+            }
+            this.$forceUpdate();
           },
           change_result(){
             this.result_single_shown = (this.result_single_shown==true)?false:true; 
