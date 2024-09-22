@@ -174,7 +174,7 @@
                             <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
                                 <span class="range_label">Current Value: {{ selectedOptions.length }}</span>
                                 <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
-                                @click="describe_submit()">
+                                @click="describe_submit(),message_notify()">
                                 Submit</el-button>
                             </div>
                         </div>
@@ -619,6 +619,13 @@
           difficulty_change(){
             this.handleSliderInput();
             this.handleSliderChange();
+          },
+          message_notify() {
+            const h = this.$createElement;
+            this.$notify({
+            title: 'Successful Annotation',
+            message: h('i', { style: 'color: gray'}, 'Annotated class:  ' + this.className )
+            });
           },
         }
     }
