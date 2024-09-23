@@ -33,11 +33,11 @@
             <div class="Main">
                 <div class="item1" style="width: 19%;flex-shrink: 0;">
                     <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                        <span class="view_title">Label Recommendation</span>
+                        <span class="view_title">Labeling</span>
                     </div>
                     <el-divider></el-divider>
                     <div class="flex_row_bewteen" style="width: 100%;height: 4%;">
-                        <span class="describe_label" style="margin-left: 20px;">Cluster Recommendation</span>
+                        <span class="describe_label" style="margin-left: 20px;">Data Overview</span>
                     </div>
                     <div class="flex_row_center" style="width: 100%;height:35%;border: 1px solid #e9e9e9;">
                         <div style="width: 320px; height:300px;">
@@ -46,20 +46,20 @@
                         </div>
                     </div>
 
-                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="describe_label" style="margin-left: 20px;">Image Shown</span>
-                    </div>
-                    <div style="width: 100%;height:37%;">
+                    <!-- <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
+                        <span class="describe_label" style="margin-left: 20px;">Related Images</span>
+                    </div> -->
+                    <div style="width: 100%;height:45%;margin-top: 20px;">
                         <el-tabs v-model="tabsName" type="border-card" :stretch="true">
-                            <el-tab-pane label="Circled Images" name="first">
-                                <ul class="container_ul" style="width: 100%;height: 250px;">
+                            <el-tab-pane label="Selected Images" name="first">
+                                <ul class="container_ul" style="width: 100%;height: 300px;">
                                     <li v-for="(image, index) in chosen_imageData" :key="index" class="li_left">
                                         <img :src="image" @click="get_similar_images(index)" style="cursor: pointer;"/>
                                     </li>
                                 </ul>
                             </el-tab-pane>                                                                     
-                            <el-tab-pane label="Similar Images" name="second">
-                                <ul class="container_ul" style="width: 100%;height: 250px;">
+                            <el-tab-pane label="Related Images" name="second">
+                                <ul class="container_ul" style="width: 100%;height: 300px;">
                                     <li v-for="(image, index) in similar_imageData" :key="index" class="li_left">
                                         <img :src="image"/>
                                     </li>
@@ -68,32 +68,32 @@
                         </el-tabs>
                     </div>
 
-                    <div class="input_div" style="width: 100%;height: 8%;margin-top: 20px;">
-                        <div class="flex_column_between" style="width: 60%;height: 80%;margin-left: 20px;margin-bottom: 20px;">
-                            <span class="describe_label" style="margin-left: 0px;">Enter the category label</span>
+                    <div class="input_div" style="width: 100%;height: 8%;margin-top: 30px;">
+                        <div class="flex_column_between" style="width: 40%;height: 80%;justify-content: flex-start;margin-left: 20px;margin-bottom: 20px;">
+                            <!-- <span class="describe_label" style="margin-left: 0px;">Enter the category label</span> -->
                             <el-input v-model="className" placeholder="please input label"></el-input>
                         </div>
-                        <div class="flex_column_between" style="width: 25%;height: 80%;justify-content: flex-end;margin-right: 10px;margin-bottom: 20px;    ">
+                        <div class="flex_column_between" style="width: 50%;height: 80%;justify-content: flex-start;margin-right: 10px;margin-bottom: 20px;    ">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
                             @click="get_similars(),get_text_result()">
-                            Annotate</el-button>
+                            Label the category</el-button>
                         </div>
                     </div>
                 </div>
 
                 <div class="item2" style="flex-grow: 1;height: 100%;">
                     <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                        <span class="view_title">Image Annotation Selection</span>
-                        <div class="flex_row_bewteen" style="height: 100%;width: 30%;">
+                        <span class="view_title">Image Selection</span>
+                        <div class="flex_row_bewteen" style="height: 100%;width: 40%;">
                             <el-radio-group class="difficulty_radio_group" v-model="difficulty_radio" @input="difficulty_change">
-                                <el-radio label="Simple" border class="difficulty_radio">Simple</el-radio>
-                                <el-radio label="Hard" border class="difficulty_radio">Hard</el-radio>
+                                <el-radio label="Simple" border class="difficulty_radio">Simple Images</el-radio>
+                                <el-radio label="Hard" border class="difficulty_radio">Hard Images</el-radio>
                             </el-radio-group>
                         </div>
                     </div>
                     <el-divider></el-divider>
                     <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="describe_label" style="margin-left: 30px;">Similarity Density</span>
+                        <span class="describe_label" style="margin-left: 30px;">Image-Label Similarity Distribution</span>
                     </div>
 
                     <div style="position: relative; width: 100%;height: 30%;">
@@ -117,15 +117,15 @@
                                 style="margin: 0 10px;"></el-slider>
                         </div>
                         <div class="flex_row_bewteen" style="width: 100%;margin: 30px auto;">
-                            <span class="range_label">Current parameter setting: {{ this.real_value_left }} - {{ this.real_value_right }}</span>
+                            <span class="range_label">Filter parameter range: {{ this.real_value_left }} - {{ this.real_value_right }}</span>
                             <span class="range_label" style="margin-right: 20px;">Candidate images count: {{ Object.keys(this.shown_imageInfo).length }}</span>
                         </div>
                     </div>
 
                     <div class="flex_column_start" style="height: 60%;width: 100%;margin-top: 30px;padding-top: 19px;">
                         <el-divider></el-divider>
-                        <div class="flex_row_bewteen"  style="width: 100%;margin: 10px 30px;">
-                            <span class="describe_label">{{ this.difficulty_radio }} Images</span>
+                        <div class="flex_row_bewteen"  style="width: 100%;margin: 10px 30px;justify-content: flex-end;">
+                            <!-- <span class="describe_label">{{ this.difficulty_radio }} Images</span> -->
                             <el-switch
                                 style="display: block;margin-right: 50px;"
                                 v-model="filter_mode"
@@ -156,7 +156,7 @@
                 <div class="item3" style="width: 25%;flex-shrink: 0;">
                     <div class="flex_column_start" style="width: 100%;height: 48%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                            <span class="view_title">Feature Phrases Selection</span>
+                            <span class="view_title">Feature Description Selection</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;border: 1px solid #e9e9e9;">
@@ -183,18 +183,18 @@
                     
                     <div class="flex_column_center" style="width: 100%;height: 52%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;margin-top: -30px;">
-                            <span class="view_title">Evaluation Results</span>
+                            <span class="view_title">Results(mean Average Precision)</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="position:relative;width: 100%;height: 80%;background-color: white;">
                             <el-tabs v-model="result_show" type="border-card" @tab-click="change_result" :stretch="true">
-                                <el-tab-pane label="Overall" name="first">
+                                <el-tab-pane label="Overall Evaluation" name="first">
                                     <div style="width: 100%; height: 300px;">
                                         <svg id="result_overall_svg" xmlns="http://www.w3.org/2000/svg">
                                         </svg>
                                     </div>
                                 </el-tab-pane>
-                                <el-tab-pane label="Single" name="second">
+                                <el-tab-pane label="Single Evaluation" name="second">
                                     <div style="overflow: auto;width: 100%; height: 300px;">
                                         <svg id="result_single_svg" xmlns="http://www.w3.org/2000/svg">
                                         </svg>
@@ -357,8 +357,8 @@
                 .attr("cy",function(d){
                     return yScale(d[2]);
                 })
-                .attr("stroke", "white")
-                .attr("stroke-width", 0.12)
+                // .attr("stroke", "white")
+                // .attr("stroke-width", 0.05)
                 .style('cursor','pointer');
             this.setLasso();
           },
