@@ -92,7 +92,7 @@ export function colors_20(){
         "#d1bcb3",
         "#d46d69",
         "#e9b1b9",
-        "#C9E2D4 ",//
+        "#C9E2D4 ",
         "#d1c6dd",
         "#af8783",
         "#bfd9ae",
@@ -100,7 +100,7 @@ export function colors_20(){
         "#f0d1dd",
         "#A5B5D9 ",
         "#E9D9B1 ",
-        "#b197bf",//
+        "#b197bf",
         "#F7E3AF ",
         "#B9A896",
         "#D8A499 ",

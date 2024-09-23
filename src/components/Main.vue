@@ -9,18 +9,18 @@
                         <el-button plain 
                             style="height: 30px;padding: 0;font-size: large;width: 220px;font-weight: bold;font-family: Arial;"
                             @click="drawer = true">
-                            Annotated Classes List</el-button>
+                            Annotated Class List</el-button>
                         <el-button plain 
                             style="height: 30px;padding: 0;font-size: large;margin-right: 25px;width: 80px;font-weight: bold;font-family: Arial"
                             @click="get_detection_results()">
                             Train</el-button>
                         <el-drawer
-                            title="Annotated Classes"
+                            title="Annotated Class List"
                             :visible.sync="drawer"
                             size="12%"
                             :with-header="false">
                             <div class="flex_column_start">
-                                <span class="view_title" style="margin-top: 20px; font-family: Arial">Annotated Classes List</span>
+                                <span class="view_title" style="margin-top: 20px; font-family: Arial">Annotated Class List</span>
                                 <span class="describe_label" v-for="name in Annotated_classes" :key="name" 
                                 style="margin: 10px 20px;">{{name}}</span>
                             </div>
@@ -76,7 +76,7 @@
                         <div class="flex_column_between" style="width: 50%;height: 80%;justify-content: flex-start;margin-right: 10px;margin-bottom: 20px;    ">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
                             @click="get_similars(),get_text_result()">
-                            Label the category</el-button>
+                            Label the class</el-button>
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                 <div class="item3" style="width: 25%;flex-shrink: 0;">
                     <div class="flex_column_start" style="width: 100%;height: 48%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                            <span class="view_title">Feature Description Selection</span>
+                            <span class="view_title">Feature Phrase Selection</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;border: 1px solid #e9e9e9;">
@@ -194,7 +194,7 @@
                                         </svg>
                                     </div>
                                 </el-tab-pane>
-                                <el-tab-pane label="Single Evaluation" name="second">
+                                <el-tab-pane label="Per-class Evaluation" name="second">
                                     <div style="overflow: auto;width: 100%; height: 300px;">
                                         <svg id="result_single_svg" xmlns="http://www.w3.org/2000/svg">
                                         </svg>
