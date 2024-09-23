@@ -54,7 +54,7 @@
                         <el-tabs v-model="tabsName" type="border-card" :stretch="true">
                             <el-tab-pane label="Circled Images" name="first">
                                 <ul class="container_ul" style="width: 100%;height: 250px;">
-                                    <li v-for="(image, index) in chosen_imageData" :key="index">
+                                    <li v-for="(image, index) in chosen_imageData" :key="index" class="li_left">
                                         <img :src="image" @click="get_similar_images(index)" style="cursor: pointer;"/>
                                     </li>
                                 </ul>
@@ -155,7 +155,7 @@
                 </div>
 
                 <div class="item3" style="width: 25%;flex-shrink: 0;">
-                    <div class="flex_column_start" style="width: 100%;height: 50%;">
+                    <div class="flex_column_start" style="width: 100%;height: 48%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
                             <span class="view_title">Feature Phrases Selection</span>
                         </div>
@@ -180,9 +180,9 @@
                         </div>
                     </div>
 
-                    <div style="width: 106%;height: 3px;background-color: #e9e9e9;margin: 0 0 0 -20px;"></div>
+                    <div style="width: 106%;height: 3px;background-color: #e9e9e9;margin: -25px 0 0 -20px;"></div>
                     
-                    <div class="flex_column_center" style="width: 100%;height: 50%;">
+                    <div class="flex_column_center" style="width: 100%;height: 52%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;margin-top: -30px;">
                             <span class="view_title">Evaluation Results</span>
                         </div>
@@ -190,13 +190,13 @@
                         <div style="position:relative;width: 100%;height: 80%;background-color: white;">
                             <el-tabs v-model="result_show" type="border-card" @tab-click="change_result" :stretch="true">
                                 <el-tab-pane label="Overall" name="first">
-                                    <div style="width: 100%; height: 280px;">
+                                    <div style="width: 100%; height: 300px;">
                                         <svg id="result_overall_svg" xmlns="http://www.w3.org/2000/svg">
                                         </svg>
                                     </div>
                                 </el-tab-pane>
                                 <el-tab-pane label="Single" name="second">
-                                    <div style="overflow: auto;width: 100%; height: 280px;">
+                                    <div style="overflow: auto;width: 100%; height: 300px;">
                                         <svg id="result_single_svg" xmlns="http://www.w3.org/2000/svg">
                                         </svg>
                                     </div>
@@ -353,6 +353,8 @@
                 .attr("cy",function(d){
                     return yScale(d[2]);
                 })
+                .attr("stroke", "white")
+                .attr("stroke-width", 0.2)
                 .style('cursor','pointer');
             this.setLasso();
           },

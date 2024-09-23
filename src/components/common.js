@@ -252,7 +252,7 @@ export function density_shown(svg_name, similarities){
     var container = d3.select('#svg_container');
     var containerWidth = container.node().offsetWidth;
     var containerHeight = container.node().offsetHeight;
-    var margin = {top: 0, right: 10, bottom: 20, left: 10};
+    var margin = {top: 1, right: 10, bottom: 20, left: 10};
     var Width = containerWidth - margin.right - margin.left;
     var Height = containerHeight - margin.top - margin.bottom;
     
@@ -262,7 +262,7 @@ export function density_shown(svg_name, similarities){
                     .range([margin.left, Width + margin.left]);
     var yScale = d3.scaleLinear()
                     .range([Height + margin.top, margin.top]);
-    var density = kernelDensityEstimator(kernelEpanechnikov(0.003), xScale.ticks(80))(similarities);
+    var density = kernelDensityEstimator(kernelEpanechnikov(0.005), xScale.ticks(80))(similarities);
     yScale.domain([0, d3.max(density, function(d) { return d[1]; })]);
     svg.append("path")
         .datum(density)
