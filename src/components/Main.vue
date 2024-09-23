@@ -7,22 +7,22 @@
                     <span class="head_title">Towards Superior Data Supervision for Open-World Object Detection</span>
                     <div  class="flex_row_bewteen" style="height: 100%;width: 18%;">
                         <el-button plain 
-                            style="height: 30px;padding: 0;font-size: large;width: 180px;font-weight: bold;"
+                            style="height: 30px;padding: 0;font-size: large;width: 220px;font-weight: bold;font-family: Arial;"
                             @click="drawer = true">
-                            Annotated Classes</el-button>
+                            Annotated Classes List</el-button>
                         <el-button plain 
-                            style="height: 30px;padding: 0;font-size: large;margin-right: 50px;width: 80px;font-weight: bold;"
+                            style="height: 30px;padding: 0;font-size: large;margin-right: 25px;width: 80px;font-weight: bold;font-family: Arial"
                             @click="get_detection_results()">
                             Train</el-button>
                         <el-drawer
                             title="Annotated Classes"
                             :visible.sync="drawer"
-                            size="15%"
+                            size="12%"
                             :with-header="false">
                             <div class="flex_column_start">
-                                <span class="view_title" style="margin-top: 10px;">Annotated Classes</span>
+                                <span class="view_title" style="margin-top: 20px; font-family: Arial">Annotated Classes List</span>
                                 <span class="describe_label" v-for="name in Annotated_classes"
-                                style="margin: 5px 20px;">{{name}}</span>
+                                style="margin: 10px 20px;">{{name}}</span>
                             </div>
                         </el-drawer>
                     </div>
@@ -31,13 +31,13 @@
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 19%;flex-shrink: 0;">
+                <div class="item1" style="width: 21%;flex-shrink: 0;">
                     <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                        <span class="view_title">Label Recommand</span>
+                        <span class="view_title">Label Recommendation</span>
                     </div>
                     <el-divider></el-divider>
                     <div class="flex_row_bewteen" style="width: 100%;height: 4%;">
-                        <span class="describe_label" style="margin-left: 20px;">Cluster Recommand</span>
+                        <span class="describe_label" style="margin-left: 20px;">Cluster Recommendation</span>
                     </div>
                     <div class="flex_row_center" style="width: 100%;height:35%;">
                         <div style="width: 300px; height:300px;">
@@ -52,16 +52,16 @@
                     </div>
                     <div style="width: 100%;height:37%;">
                         <el-tabs v-model="tabsName" type="border-card" :stretch="true">
-                            <el-tab-pane label="circled images" name="first">
+                            <el-tab-pane label="Circled Images" name="first">
                                 <ul class="container_ul" style="width: 100%;height: 250px;">
                                     <li v-for="(image, index) in chosen_imageData" :key="index">
                                         <img :src="image" @click="get_similar_images(index)" style="cursor: pointer;"/>
                                     </li>
                                 </ul>
                             </el-tab-pane>                                                                     
-                            <el-tab-pane label="similar images" name="second">
+                            <el-tab-pane label="Similar Images" name="second">
                                 <ul class="container_ul" style="width: 100%;height: 250px;">
-                                    <li v-for="(image, index) in similar_imageData" :key="index">
+                                    <li v-for="(image, index) in similar_imageData" :key="index" class="li_left">
                                         <img :src="image"/>
                                     </li>
                                 </ul>
@@ -69,12 +69,12 @@
                         </el-tabs>
                     </div>
 
-                    <div class="input_div" style="width: 100%;height: 8%;">
-                        <div class="flex_column_between" style="width: 50%;height: 80%;margin-left: 30px;">
-                            <span class="describe_label" style="margin-left: 3px;">Manually Label</span>
+                    <div class="input_div" style="width: 100%;height: 8%;margin-top: 15px;">
+                        <div class="flex_column_between" style="width: 50%;height: 80%;margin-left: 10px;margin-bottom: 20px;">
+                            <span class="describe_label" style="margin-left: 0px;">Enter the category label</span>
                             <el-input v-model="className" placeholder="please input label"></el-input>
                         </div>
-                        <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 30px;">
+                        <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 30px;margin-bottom: 20px;    ">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
                             @click="get_similars(),get_text_result()">
                             Annotate</el-button>
@@ -118,7 +118,7 @@
                                 style="margin: 0 10px;"></el-slider>
                         </div>
                         <div class="flex_row_bewteen" style="width: 85%;margin: 30px auto;">
-                            <span class="range_label">Current Value: {{ this.real_value_left }} - {{ this.real_value_right }}</span>
+                            <span class="range_label">Current parameter setting: {{ this.real_value_left }} - {{ this.real_value_right }}</span>
                             <span class="range_label" style="margin-right: 20px;">Candidate images count: {{ Object.keys(this.shown_imageInfo).length }}</span>
                         </div>
                     </div>
@@ -139,13 +139,13 @@
                         <div class="flex_column_center" style="width: 100%;height: 70%;margin-bottom: 5px;">
                             <ul class="container_ul" style="height: 360px;">
                                 <li v-for="(image_data, image_name) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
-                                            :class="{isSelected:image_data[1]}">
+                                            :class="{isSelected:image_data[1]}" class="li_right">
                                     <img :src="image_data[0]"/>
                                 </li>
                             </ul>
                         </div>
                         <div class="flex_row_bewteen" style="width: 100%;margin: 3px 5px;">
-                            <span class="range_label">Current Selected: {{ this.current_selected_num }}</span>
+                            <span class="range_label">Selected image count: {{ this.current_selected_num }}</span>
                             <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
                             @click="handleBtnConfirm">
                             Confirm</el-button>
@@ -157,7 +157,7 @@
                 <div class="item3" style="width: 25%;flex-shrink: 0;">
                     <div class="flex_column_start" style="width: 100%;height: 50%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                            <span class="view_title">LLM Interaction</span>
+                            <span class="view_title">Feature Phrases Selection</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: #e9e9e9;">
@@ -172,7 +172,7 @@
                                 </el-checkbox>
                             </div>
                             <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                                <span class="range_label">Current Value: {{ selectedOptions.length }}</span>
+                                <span class="range_label">Selected phrase count : {{ selectedOptions.length }}</span>
                                 <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
                                 @click="describe_submit(),message_notify()">
                                 Submit</el-button>
@@ -184,10 +184,10 @@
                     
                     <div class="flex_column_center" style="width: 100%;height: 50%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;margin-top: -30px;">
-                            <span class="view_title">Evaluation results</span>
+                            <span class="view_title">Evaluation Results</span>
                         </div>
                         <el-divider></el-divider>
-                        <div style="position:relative;width: 100%;height: 80%;background-color: ghostwhite;">
+                        <div style="position:relative;width: 100%;height: 80%;background-color: white;">
                             <el-tabs v-model="result_show" type="border-card" @tab-click="change_result" :stretch="true">
                                 <el-tab-pane label="Overall" name="first">
                                     <div style="width: 100%; height: 280px;">

@@ -26,10 +26,11 @@
 }
 
 .head_title{
-    font-size: xx-large;
+    font-size: 24px;
+    font-weight: bold;
     color: white;
-    font-family: Serif;
-    margin-left: 30px;
+    font-family: Arial, sans-serif;
+    margin-left: 15px;
 }
 
 .Main{
@@ -53,16 +54,20 @@
 }
 
 .view_title{
-    font-size: x-large;
-    color: #303133;
+    /* font-size: large;
+    color: #575454;
     font-family: Sans-serif;
     margin-left: 20px;
+    font-weight: bold; */
+    font-size: 19px;
     font-weight: bold;
+    color: #636262;
+    font-family: Arial, sans-serif;
+    margin-left: 10px;
 }
-
 .describe_label{
-    font-size: large;
-    color: #606266;
+    font-size: medium;
+    color: #636262;
     font-family: Sans-serif;
     font-weight: bold;
 }
@@ -174,12 +179,20 @@
     background-color:#e9e9e9;
 }
 
-li {
+.li_left{
     border: 1px solid gray;
-    width: 70px;
-    height: 70px;
+    width: 64px;
+    height: 64px;
     margin: 4px;
 }
+
+.li_right{
+    border: 1px solid gray;
+    width: 68px;
+    height: 68px;
+    margin: 4px;
+}
+
 img {
     width: 100%;
     height: 100%;
