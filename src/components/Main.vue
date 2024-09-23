@@ -69,11 +69,11 @@
                     </div>
 
                     <div class="input_div" style="width: 100%;height: 8%;margin-top: 30px;">
-                        <div class="flex_column_between" style="width: 40%;height: 80%;justify-content: flex-start;margin-left: 20px;margin-bottom: 20px;">
+                        <div class="flex_column_between" style="width: 50%;height: 80%;justify-content: flex-start;margin-left: 20px;margin-bottom: 20px;">
                             <!-- <span class="describe_label" style="margin-left: 0px;">Enter the category label</span> -->
                             <el-input v-model="className" placeholder="please input label"></el-input>
                         </div>
-                        <div class="flex_column_between" style="width: 50%;height: 80%;justify-content: flex-start;margin-right: 10px;margin-bottom: 20px;    ">
+                        <div class="flex_column_between" style="width: 40%;height: 80%;justify-content: flex-start;margin-right: 10px;margin-bottom: 20px;    ">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
                             @click="get_similars(),get_text_result()">
                             Label the class</el-button>
@@ -183,7 +183,7 @@
                     
                     <div class="flex_column_center" style="width: 100%;height: 52%;">
                         <div class="flex_row_bewteen" style="width: 100%;height: 40px;margin-top: -30px;">
-                            <span class="view_title">Results(mean Average Precision)</span>
+                            <span class="view_title">Mean Average Precision</span>
                         </div>
                         <el-divider></el-divider>
                         <div style="position:relative;width: 100%;height: 80%;background-color: white;">
