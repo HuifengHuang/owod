@@ -311,10 +311,15 @@
   
         reduce_distribution(data){
             // const distinctColors = generateDistinctColors(50);
-            const color_50 = colors_50();
+            // const color_50 = colors_50();
+            // var colors = d3.scaleQuantize()
+            //     .domain([0,50])
+            //     .range(color_50);
+
+            const color_20 = colors_20();
             var colors = d3.scaleQuantize()
-                .domain([0,50])
-                .range(color_50);
+                .domain([0,20])
+                .range(color_20);
 
             var svg = d3.select("#svg")
             var dataset = data;
@@ -650,16 +655,16 @@
           }
 
           .selected {
-              stroke: red;
+              stroke: black;
               stroke-width: 1;
           }
 
           .possible{
-              stroke:red;
+              stroke:black;
               stroke-width: 1;
           }
           .not_possible{
-              stroke:black;
+              stroke:white;
           }
 
           .lasso path{

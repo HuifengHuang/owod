@@ -81,3 +81,28 @@ export function colors_50(){
     ];
     return colors;    
 }
+
+export function colors_20(){
+    return [
+        "#8B0000",
+        "#FF4500",
+        "#800080",
+        "#FF8C00",
+        "#8B4513",
+        "#2E8B57",
+        "#4682B4",
+        "#5F9EA0",
+        "#B22222",
+        "#9932CC",
+        "#8FBC8F",
+        "#6A5ACD",
+        "#A0522D",
+        "#CD5C5C",
+        "#C71585",
+        "#FF6347",
+        "#9ACD32",
+        "#DAA520",
+        "#708090",
+        "#D2691E",
+    ];
+}
