@@ -31,7 +31,7 @@
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 21%;flex-shrink: 0;">
+                <div class="item1" style="width: 19%;flex-shrink: 0;">
                     <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
                         <span class="view_title">Label Recommendation</span>
                     </div>
@@ -46,8 +46,7 @@
                         </div>
                     </div>
 
-                    <el-divider></el-divider>
-                    <div class="flex_row_bewteen" style="width: 100%;height: 4%;">
+                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
                         <span class="describe_label" style="margin-left: 20px;">Image Shown</span>
                     </div>
                     <div style="width: 100%;height:37%;">
@@ -70,11 +69,11 @@
                     </div>
 
                     <div class="input_div" style="width: 100%;height: 8%;margin-top: 20px;">
-                        <div class="flex_column_between" style="width: 50%;height: 80%;margin-left: 20px;margin-bottom: 20px;">
+                        <div class="flex_column_between" style="width: 60%;height: 80%;margin-left: 20px;margin-bottom: 20px;">
                             <span class="describe_label" style="margin-left: 0px;">Enter the category label</span>
                             <el-input v-model="className" placeholder="please input label"></el-input>
                         </div>
-                        <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 10px;margin-bottom: 20px;    ">
+                        <div class="flex_column_between" style="width: 25%;height: 80%;justify-content: flex-end;margin-right: 10px;margin-bottom: 20px;    ">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
                             @click="get_similars(),get_text_result()">
                             Annotate</el-button>
@@ -130,8 +129,8 @@
                             <el-switch
                                 style="display: block;margin-right: 50px;"
                                 v-model="filter_mode"
-                                active-color="#add8e6"
-                                inactive-color="#808080"
+                                active-color="#636262"
+                                inactive-color="#636262"
                                 active-text="Reserve"
                                 inactive-text="Delete">
                             </el-switch>

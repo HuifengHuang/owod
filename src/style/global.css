@@ -181,15 +181,15 @@
 
 .li_left{
     border: 1px solid gray;
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     margin: 4px;
 }
 
 .li_right{
     border: 1px solid gray;
-    width: 68px;
-    height: 68px;
+    width: 71px;
+    height: 71px;
     margin: 4px;
 }
 
@@ -294,4 +294,42 @@ img {
 }
 .bar2 {
     fill: gray;
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
+    color:gray;
+    font-weight: bold;
+}
+
+.el-switch__label.is-active{
+    color: gray;
+    font-weight: bold;
+}
+
+.el-radio.is-bordered.is-checked{
+    border-color: gray;
+}
+
+.el-radio__input.is-checked+.el-radio__label{
+    color: gray;
+    font-weight: bold;
+}
+
+.el-radio__input.is-checked .el-radio__inner{
+    border-color: gray;
+    background: gray;
+}
+
+.el-switch__label *{
+    color: gray;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+    background-color: #777777;
+    border-color: #777777;
+}
+
+.el-checkbox__input.is-checked+.el-checkbox__label{
+    color: gray;
+    font-weight: bold;
 }
