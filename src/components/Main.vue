@@ -21,7 +21,7 @@
                             :with-header="false">
                             <div class="flex_column_start">
                                 <span class="view_title" style="margin-top: 20px; font-family: Arial">Annotated Classes List</span>
-                                <span class="describe_label" v-for="name in Annotated_classes"
+                                <span class="describe_label" v-for="name in Annotated_classes" :key="name" 
                                 style="margin: 10px 20px;">{{name}}</span>
                             </div>
                         </el-drawer>
@@ -39,9 +39,9 @@
                     <div class="flex_row_bewteen" style="width: 100%;height: 4%;">
                         <span class="describe_label" style="margin-left: 20px;">Cluster Recommendation</span>
                     </div>
-                    <div class="flex_row_center" style="width: 100%;height:35%;">
-                        <div style="width: 300px; height:300px;">
-                            <svg id="svg" style="width: 300px; height:300px;" xmlns="http://www.w3.org/2000/svg">
+                    <div class="flex_row_center" style="width: 100%;height:35%;border: 1px solid #e9e9e9;">
+                        <div style="width: 320px; height:300px;">
+                            <svg id="svg" style="width: 320px; height:300px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
                         </div>
                     </div>
@@ -69,12 +69,12 @@
                         </el-tabs>
                     </div>
 
-                    <div class="input_div" style="width: 100%;height: 8%;margin-top: 15px;">
-                        <div class="flex_column_between" style="width: 50%;height: 80%;margin-left: 10px;margin-bottom: 20px;">
+                    <div class="input_div" style="width: 100%;height: 8%;margin-top: 20px;">
+                        <div class="flex_column_between" style="width: 50%;height: 80%;margin-left: 20px;margin-bottom: 20px;">
                             <span class="describe_label" style="margin-left: 0px;">Enter the category label</span>
                             <el-input v-model="className" placeholder="please input label"></el-input>
                         </div>
-                        <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 30px;margin-bottom: 20px;    ">
+                        <div class="flex_column_between" style="width: 30%;height: 80%;justify-content: flex-end;margin-right: 10px;margin-bottom: 20px;    ">
                             <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
                             @click="get_similars(),get_text_result()">
                             Annotate</el-button>
@@ -99,14 +99,14 @@
 
                     <div style="position: relative; width: 100%;height: 30%;">
                         <div style="width: 100%;height: 80%;margin: 15px auto;">
-                            <div id="svg_container" style="width: 85%;height: 100%;margin: 0 auto;">
+                            <div id="svg_container" style="width: 100%;height: 100%;margin: 0 auto;">
                                 <svg v-show="this.difficulty_radio=='Simple'" id="svg_simple" class="full_fill" xmlns="http://www.w3.org/2000/svg">
                                 </svg>
                                 <svg v-show="this.difficulty_radio=='Hard'" id="svg_hard" class="full_fill" xmlns="http://www.w3.org/2000/svg">
                                 </svg>
                             </div>
                         </div>
-                        <div style="width: 85%;margin: -30px auto;">
+                        <div style="width: 100%;margin: -30px auto;">
                             <el-slider  v-model="similarity_value"
                                 range
                                 :step="0.005"
@@ -117,7 +117,7 @@
                                 @input="handleSliderInput"
                                 style="margin: 0 10px;"></el-slider>
                         </div>
-                        <div class="flex_row_bewteen" style="width: 85%;margin: 30px auto;">
+                        <div class="flex_row_bewteen" style="width: 100%;margin: 30px auto;">
                             <span class="range_label">Current parameter setting: {{ this.real_value_left }} - {{ this.real_value_right }}</span>
                             <span class="range_label" style="margin-right: 20px;">Candidate images count: {{ Object.keys(this.shown_imageInfo).length }}</span>
                         </div>
@@ -144,9 +144,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="flex_row_bewteen" style="width: 100%;margin: 3px 5px;">
+                        <div class="flex_row_bewteen" style="width: 100%;margin: 3px 0px;">
                             <span class="range_label">Selected image count: {{ this.current_selected_num }}</span>
-                            <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
+                            <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 5px; font-size: medium;"
                             @click="handleBtnConfirm">
                             Confirm</el-button>
                         </div>
@@ -160,7 +160,7 @@
                             <span class="view_title">Feature Phrases Selection</span>
                         </div>
                         <el-divider></el-divider>
-                        <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;background-color: #e9e9e9;">
+                        <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;border: 1px solid #e9e9e9;">
                             <el-checkbox-group v-model="selectedOptions" @change="handleCheckedCitiesChange">
                                 <el-checkbox v-for="option in options" :label="option" :key="option">{{option}}</el-checkbox>
                             </el-checkbox-group>
@@ -221,7 +221,7 @@
     import lasso from "./d3-lasso";
     import $ from "jquery";
     import { ref } from 'vue';
-    import {generateDistinctColors, colors_50} from './color.js';
+    import {generateDistinctColors, colors_50, colors_20} from './color.js';
     import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown ,density_shown, overall_class_shown} from "./common.js";
   
     export default {
@@ -340,7 +340,7 @@
                 .enter()
                 .append("circle")
                 .classed("circles",true)
-                .attr("r",1.5)
+                .attr("r",2)
                 .attr("id",function(d,i){
                     return i;
                 })
@@ -354,7 +354,7 @@
                     return yScale(d[2]);
                 })
                 .attr("stroke", "white")
-                .attr("stroke-width", 0.2)
+                .attr("stroke-width", 0.12)
                 .style('cursor','pointer');
             this.setLasso();
           },
@@ -652,10 +652,12 @@
 
           .selected {
               stroke: red;
+              stroke-width: 1;
           }
 
           .possible{
               stroke:red;
+              stroke-width: 1;
           }
           .not_possible{
               stroke:black;

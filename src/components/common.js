@@ -159,7 +159,7 @@ export function overall_class_shown(results_overall){
             if(d.name == "Previous-old"){
                 return marginLeft + 40;
             }else if(d.name == "Previous-new"){
-                return marginLeft + 80;
+                return marginLeft + 81;
             }else if(d.name == "Current"){
                 return marginLeft + 160;
             }else if(d.name == "All"){
@@ -282,7 +282,7 @@ export function density_shown(svg_name, similarities){
 
     svg.append("path")
        .datum(density)
-       .attr("fill", "#cbcbcb") // 设置填充颜色
+       .attr("fill", "#A5A5A5 ") // 设置填充颜色
        .attr("opacity", 0.5)    // 设置透明度
        .attr("d", area);
 
