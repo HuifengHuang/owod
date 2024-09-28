@@ -3,207 +3,35 @@
     <div class="wrapper">
         <div class="content">
             <div class="Head">
-                <div class="flex_row_bewteen" style="height: 100%;width: 100%;">
-                    <span class="head_title">Towards Superior Data Supervision for Open-World Object Detection</span>
-                    <div  class="flex_row_bewteen" style="height: 100%;width: 18%;">
-                        <el-button plain 
-                            style="height: 30px;padding: 0;font-size: large;width: 220px;font-weight: bold;font-family: Arial;"
-                            @click="drawer = true">
-                            Annotated Class List</el-button>
-                        <el-button plain 
-                            style="height: 30px;padding: 0;font-size: large;margin-right: 25px;width: 80px;font-weight: bold;font-family: Arial"
-                            @click="get_detection_results()">
-                            Train</el-button>
-                        <el-drawer
-                            title="Annotated Class List"
-                            :visible.sync="drawer"
-                            size="12%"
-                            :with-header="false">
-                            <div class="flex_column_start">
-                                <span class="view_title" style="margin-top: 20px; font-family: Arial">Annotated Class List</span>
-                                <span class="describe_label" v-for="name in Annotated_classes" :key="name" 
-                                style="margin: 10px 20px;">{{name}}</span>
-                            </div>
-                        </el-drawer>
-                    </div>
-
-                </div>
             </div>
 
             <div class="Main">
-                <div class="item1" style="width: 19%;flex-shrink: 0;">
-                    <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                        <span class="view_title">Labeling</span>
-                    </div>
-                    <el-divider></el-divider>
-                    <div class="flex_row_bewteen" style="width: 100%;height: 4%;">
-                        <span class="describe_label" style="margin-left: 20px;">Data Overview</span>
-                    </div>
-                    <div class="flex_row_center" style="width: 100%;height:35%;border: 1px solid #e9e9e9;">
-                        <div style="width: 320px; height:300px;">
-                            <svg id="svg" style="width: 320px; height:300px;" xmlns="http://www.w3.org/2000/svg">
+                <div class="item1" style="width: 40%;flex-shrink: 0;">
+                    <div class="flex_row_center" style="width: 100%;height:100%;border: 1px solid #e9e9e9;">
+                        <div style="width: 500px; height:500px;">
+                            <svg id="svg" style="width: 500px; height:500px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
-                        </div>
-                    </div>
-
-                    <!-- <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="describe_label" style="margin-left: 20px;">Related Images</span>
-                    </div> -->
-                    <div style="width: 100%;height:45%;margin-top: 20px;">
-                        <el-tabs v-model="tabsName" type="border-card" :stretch="true">
-                            <el-tab-pane label="Selected Images" name="first">
-                                <ul class="container_ul" style="width: 100%;height: 300px;">
-                                    <li v-for="(image, index) in chosen_imageData" :key="index" class="li_left">
-                                        <img :src="image" @click="get_similar_images(index)" style="cursor: pointer;"/>
-                                    </li>
-                                </ul>
-                            </el-tab-pane>                                                                     
-                            <el-tab-pane label="Related Images" name="second">
-                                <ul class="container_ul" style="width: 100%;height: 300px;">
-                                    <li v-for="(image, index) in similar_imageData" :key="index" class="li_left">
-                                        <img :src="image"/>
-                                    </li>
-                                </ul>
-                            </el-tab-pane>
-                        </el-tabs>
-                    </div>
-
-                    <div class="input_div" style="width: 100%;height: 8%;margin-top: 30px;">
-                        <div class="flex_column_between" style="width: 50%;height: 80%;justify-content: flex-start;margin-left: 20px;margin-bottom: 20px;">
-                            <!-- <span class="describe_label" style="margin-left: 0px;">Enter the category label</span> -->
-                            <el-input v-model="className" placeholder="please input label"></el-input>
-                        </div>
-                        <div class="flex_column_between" style="width: 40%;height: 80%;justify-content: flex-start;margin-right: 10px;margin-bottom: 20px;    ">
-                            <el-button type="info" style="height: 30px;padding: 0;font-size: medium;"
-                            @click="get_similars(),get_text_result()">
-                            Label the class</el-button>
                         </div>
                     </div>
                 </div>
 
                 <div class="item2" style="flex-grow: 1;height: 100%;">
-                    <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                        <span class="view_title">Image Selection</span>
-                        <div class="flex_row_bewteen" style="height: 100%;width: 40%;">
-                            <el-radio-group class="difficulty_radio_group" v-model="difficulty_radio" @input="difficulty_change">
-                                <el-radio label="Simple" border class="difficulty_radio">Simple Images</el-radio>
-                                <el-radio label="Hard" border class="difficulty_radio">Hard Images</el-radio>
-                            </el-radio-group>
-                        </div>
-                    </div>
-                    <el-divider></el-divider>
-                    <div class="flex_row_bewteen" style="width: 100%;height: 5%;">
-                        <span class="describe_label" style="margin-left: 30px;">Image-Label Similarity Distribution</span>
-                    </div>
-
-                    <div style="position: relative; width: 100%;height: 30%;">
-                        <div style="width: 100%;height: 80%;margin: 15px auto;">
-                            <div id="svg_container" style="width: 100%;height: 100%;margin: 0 auto;">
-                                <svg v-show="this.difficulty_radio=='Simple'" id="svg_simple" class="full_fill" xmlns="http://www.w3.org/2000/svg">
-                                </svg>
-                                <svg v-show="this.difficulty_radio=='Hard'" id="svg_hard" class="full_fill" xmlns="http://www.w3.org/2000/svg">
-                                </svg>
-                            </div>
-                        </div>
-                        <div style="width: 100%;margin: -30px auto;">
-                            <el-slider  v-model="similarity_value"
-                                range
-                                :step="0.005"
-                                :min="0"
-                                :max="1"
-                                :show-tooltip="false"
-                                @change="handleSliderChange"
-                                @input="handleSliderInput"
-                                style="margin: 0 10px;"></el-slider>
-                        </div>
-                        <div class="flex_row_bewteen" style="width: 100%;margin: 30px auto;">
-                            <span class="range_label">Filter parameter range: {{ this.real_value_left }} - {{ this.real_value_right }}</span>
-                            <span class="range_label" style="margin-right: 20px;">Candidate images count: {{ Object.keys(this.shown_imageInfo).length }}</span>
-                        </div>
-                    </div>
-
-                    <div class="flex_column_start" style="height: 60%;width: 100%;margin-top: 30px;padding-top: 19px;">
-                        <el-divider></el-divider>
-                        <div class="flex_row_bewteen"  style="width: 100%;margin: 10px 30px;justify-content: flex-end;">
-                            <!-- <span class="describe_label">{{ this.difficulty_radio }} Images</span> -->
-                            <el-switch
-                                style="display: block;margin-right: 50px;"
-                                v-model="filter_mode"
-                                active-color="#636262"
-                                inactive-color="#636262"
-                                active-text="Reserve"
-                                inactive-text="Delete">
-                            </el-switch>
-                        </div>
-                        <div class="flex_column_center" style="width: 100%;height: 70%;margin-bottom: 5px;">
-                            <ul class="container_ul" style="height: 360px;">
-                                <li v-for="(image_data, image_name) in shown_imageInfo" :key="image_name" @click="choose_image(image_name)"
-                                            :class="{isSelected:image_data[1]}" class="li_right">
-                                    <img :src="image_data[0]"/>
+                    <div class="flex_column_start" style="height: 90%;width: 100%;margin-top: 30px;padding-top: 19px;">
+                        <div class="flex_column_center" style="width: 100%;height: 100%;margin-bottom: 5px;">
+                            <ul class="container_ul" style="height: 700px;">
+                                <li v-for="(item, index) in Selected_data" :key="index" class="li_right flex_row_left">
+                                    <img :src="item.image"/>
+                                    <img :src="item.raw_image"/>
+                                    <span style="width: 200px;">{{ item.text }}</span>
                                 </li>
                             </ul>
                         </div>
-                        <div class="flex_row_bewteen" style="width: 100%;margin: 3px 0px;">
-                            <span class="range_label">Selected image count: {{ this.current_selected_num }}</span>
-                            <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 5px; font-size: medium;"
-                            @click="handleBtnConfirm">
-                            Confirm</el-button>
-                        </div>
-                        
                     </div>
+                    <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 5px; font-size: medium;"
+                            @click="F5">
+                            刷新</el-button>
                 </div>
 
-                <div class="item3" style="width: 25%;flex-shrink: 0;">
-                    <div class="flex_column_start" style="width: 100%;height: 48%;">
-                        <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                            <span class="view_title">Feature Phrase Selection</span>
-                        </div>
-                        <el-divider></el-divider>
-                        <div style="overflow-y: auto;overflow-x: hidden; width: 100%;height: 70%;border: 1px solid #e9e9e9;">
-                            <el-checkbox-group v-model="selectedOptions" @change="handleCheckedCitiesChange">
-                                <el-checkbox v-for="option in options" :label="option" :key="option">{{option}}</el-checkbox>
-                            </el-checkbox-group>
-                        </div>
-                        <div class="flex_column_start" style="width: 100%;height: 25%;">
-                            <div style="width: 100%;height: 30px;">
-                                <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin-top: 10px;">
-                                    Select All
-                                </el-checkbox>
-                            </div>
-                            <div class="flex_row_bewteen" style="width: 100%;height: 40px;">
-                                <span class="range_label">Selected phrase count : {{ selectedOptions.length }}</span>
-                                <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 10px; font-size: medium;"
-                                @click="describe_submit(),message_notify()">
-                                Submit</el-button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="width: 106%;height: 3px;background-color: #e9e9e9;margin: -25px 0 0 -20px;"></div>
-                    
-                    <div class="flex_column_center" style="width: 100%;height: 52%;">
-                        <div class="flex_row_bewteen" style="width: 100%;height: 40px;margin-top: -30px;">
-                            <span class="view_title">Mean Average Precision</span>
-                        </div>
-                        <el-divider></el-divider>
-                        <div style="position:relative;width: 100%;height: 80%;background-color: white;">
-                            <el-tabs v-model="result_show" type="border-card" @tab-click="change_result" :stretch="true">
-                                <el-tab-pane label="Overall Evaluation" name="first">
-                                    <div style="width: 100%; height: 300px;">
-                                        <svg id="result_overall_svg" xmlns="http://www.w3.org/2000/svg">
-                                        </svg>
-                                    </div>
-                                </el-tab-pane>
-                                <el-tab-pane label="Per-class Evaluation" name="second">
-                                    <div style="overflow: auto;width: 100%; height: 300px;">
-                                        <svg id="result_single_svg" xmlns="http://www.w3.org/2000/svg">
-                                        </svg>
-                                    </div>
-                                </el-tab-pane>
-                            </el-tabs>
-                        </div>
-                    </div>
-                </div>
             </div>
 
         </div>
@@ -227,49 +55,10 @@
       name: 'vue-owod',
       data() {
           return {
-                chosen_imageInfo:[],
-                chosen_imageData:[],
-
-                similar_imageInfo:[],
-                similar_imageData:[],
-
-                similar_simple_imageInfo:{},
-                similar_hard_imageInfo:{},
-                similarities_simple:[],
-                similarities_hard:[],
-                /*  
-                    {image_name:[image_data, false], ...}
-                */
-                shown_imageInfo:{},
-                selected_imageInfo:[],
-
-                checkAll: false,
-                allOptions:[],
-                options: [],
-                selectedOptions: [],
-                isIndeterminate: true,
-
-                result_show:'first',
-                results:{},
-                results_overall:{},
-                results_single_old:{},
-                results_single_new:{},
-                result_overall_shown: false,
-                result_single_shown: true,
-
-                similarity_value:[0,1],
-                real_value_left:0,
-                real_value_right:1,
-
-                simple_similar_value:[0,1],
-
-                className:'',
-                Annotated_classes:[],
-                drawer: false,
-                current_selected_num:0,
-                tabsName:"first",
-                difficulty_radio:'Simple',
-                filter_mode:'Delete',
+                Raw_data:[],
+                //["图片路径","文本描述","原图名称","x坐标","y坐标"]
+                Selected_data:[],
+                //["本图片二进制数据","原图二进制数据","文本描述"]
           }
       },
       mounted:function(){
@@ -281,50 +70,36 @@
             fetch('http://127.0.0.1:5000/data')
                 .then(response => response.json())
                 .then(data => {
+                    this.Raw_data = data;
                     this.reduce_distribution(data);
                 })
                 .catch(error => console.error('Error:', error));
         },
 
-        fetch_images(image_name, save){
-            fetch('http://127.0.0.1:5000/images/' + image_name)
+        fetch_images(dataset){
+            var temp = {};
+            var path = "image/GranDf/train/" + dataset[2]  + ".jpg";
+            fetch('http://127.0.0.1:5000/images/' + dataset[0])
             .then(response => response.arrayBuffer())
             .then(data =>{
                 var image_data = "data:image/jpeg;base64," + arrayBufferToBase64(data);
-                if(save=="chosen_imageData"){
-                    this.chosen_imageData.push(image_data);
-                    this.chosen_imageInfo.push(image_name);
-                }else if(save=="similar_imageData"){
-                    this.similar_imageData.push(image_data);
-                }else if(save=="similar_simple_imageData"){
-                    this.similar_simple_imageInfo[image_name].push(image_data);
-                    this.similar_simple_imageInfo[image_name].push(false);
-                }else if(save=="similar_hard_imageData"){
-                    this.similar_hard_imageInfo[image_name].push(image_data);
-                    this.similar_hard_imageInfo[image_name].push(false);
-                }
-
-                // console.log(typeof(image_data));
-                this.$forceUpdate()
+                temp['image'] = image_data;
             });
+            fetch('http://127.0.0.1:5000/images/' + path)
+            .then(response => response.arrayBuffer())
+            .then(data =>{
+                var image_data = "data:image/jpeg;base64," + arrayBufferToBase64(data);
+                temp['raw_image'] = image_data;
+            });
+            temp['text'] = dataset[1];
+            this.Selected_data.push(temp);
         },
   
         reduce_distribution(data){
-            // const distinctColors = generateDistinctColors(50);
-            // const color_50 = colors_50();
-            // var colors = d3.scaleQuantize()
-            //     .domain([0,50])
-            //     .range(color_50);
-
-            const color_20 = colors_20();
-            var colors = d3.scaleQuantize()
-                .domain([0,20])
-                .range(color_20);
-
             var svg = d3.select("#svg")
             var dataset = data;
-            var [Xmax,Xmin] = findMaxMin(dataset,1);
-            var [Ymax,Ymin] = findMaxMin(dataset,2);
+            var [Xmax,Xmin] = findMaxMin(dataset,3);
+            var [Ymax,Ymin] = findMaxMin(dataset,4);
             let svg_element = document.getElementById("svg");
             let JQsvg = $(svg_element);
             svg_element = JQsvg[0];
@@ -348,14 +123,11 @@
                 .attr("id",function(d,i){
                     return i;
                 })
-                .attr("fill",function(d){
-                      return colors(d[3]);
-                })
                 .attr("cx",function(d){
-                    return xScale(d[1]);
+                    return xScale(d[3]);
                 })
                 .attr("cy",function(d){
-                    return yScale(d[2]);
+                    return yScale(d[4]);
                 })
                 // .attr("stroke", "white")
                 // .attr("stroke-width", 0.05)
@@ -368,8 +140,6 @@
                 ls.items() 
                         .classed("not_possible",true)
                         .classed("selected",false);
-                this.chosen_imageData.length = 0;
-                this.chosen_imageInfo.length = 0;
             };
   
             var lasso_draw = () => {
@@ -382,14 +152,17 @@
             };
   
             var lasso_end = () => {
+                this.Selected_data = [];
                 ls.items()
                         .classed("not_possible",false)
                         .classed("possible",false);
                 ls.selectedItems()
                         .classed("selected",true);
-                ls.selectedItems().each((d,i)=>{
-                    this.fetch_images(d[0], "chosen_imageData");
-            });
+                ls.selectedItems().each((d)=>{
+                    this.fetch_images(d);
+                })
+                this.$forceUpdate();
+                console.log(this.Selected_data);
             };
             var svgNode = d3.select("#svg");
             var ls = lasso()
@@ -403,235 +176,8 @@
   
             svgNode.call(ls);
           },
-          get_similar_images(index){
-            if(this.switch_value==false)return;
-            this.tabsName = "second";
-            var image_path = this.chosen_imageInfo[index];
-            this.similar_imageInfo.length = 0;
-            this.similar_imageData.length = 0;
-            fetch('http://127.0.0.1:5000/simi/'+ image_path )
-                .then(response => response.json())
-                .then(data => {
-                    this.similar_imageInfo = data;
-                    for(let i in data){
-                        console.log(data[i][0]);
-                        this.fetch_images(data[i][0], "similar_imageData");
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-          },
-          get_similars(){
-            this.similar_simple_imageInfo = {};
-            this.similar_hard_imageInfo = {};
-            var mark_class = this.className;
-            fetch('http://127.0.0.1:5000/similars/'+ mark_class )
-                .then(response => response.json())
-                .then(data => {
-                    for(let i in data[0]){
-                        this.similar_simple_imageInfo[data[0][i]] = [];
-                        this.fetch_images(data[0][i],"similar_simple_imageData");
-                    }
-                    for(let i in data[1]){
-                        this.similar_hard_imageInfo[data[1][i]] = [];
-                        this.fetch_images(data[1][i],"similar_hard_imageData");
-                    }
-                    this.set_similarities();
-                    density_shown("svg_simple", this.similarities_simple);
-                    density_shown("svg_hard", this.similarities_hard);
-                    this.difficulty_change();
-                    this.handleSliderInput();
-                    this.handleSliderChange();
-                })
-                .catch(error => console.error('Error:', error));
+          F5(){
             this.$forceUpdate();
-          },
-          Delete(){
-            fetch('http://127.0.0.1:5000/delete_image', {
-                method: 'POST', // 使用POST方法
-                headers: {
-                    'Content-Type': 'application/json' // 设置请求头，表明发送JSON数据
-                },
-                body: JSON.stringify(
-                    this.delete_simple_imageInfo
-                ) // 将数据转换为JSON字符串
-                })
-                .then(response => response.json()) // 解析JSON格式的响应
-                .then(data => console.log(data)) // 处理解析后的数据
-                .catch(error => console.error('Error:', error)); // 处理错误
-            for(let i in this.delete_simple_imageInfo){
-                delete this.similar_simple_imageInfo[this.delete_simple_imageInfo[i]];
-                delete this.shown_simple_imageInfo[this.delete_simple_imageInfo[i]];
-            }
-            this.delete_simple_imageInfo.length = 0;
-            this.simple_selected_num = 0;
-            this.$forceUpdate();
-          },
-          handleBtnConfirm(){
-            var delete_images = [];
-            if(this.filter_mode==false){
-                for(let key in this.selected_imageInfo){
-                    delete_images.push(this.selected_imageInfo[key]);
-                }
-            }else{
-                var shown_keys = Object.keys(this.shown_imageInfo);
-                for(let key in shown_keys){
-                    if(!this.selected_imageInfo.includes(shown_keys[key])){
-                        delete_images.push(shown_keys[key]);
-                    }
-                }
-                console.log(delete_images);
-            }
-            fetch('http://127.0.0.1:5000/delete_image', {
-                method: 'POST', // 使用POST方法
-                headers: {
-                    'Content-Type': 'application/json' // 设置请求头，表明发送JSON数据
-                },
-                body: JSON.stringify(
-                    delete_images
-                ) // 将数据转换为JSON字符串
-                })
-                .then(response => response.json()) // 解析JSON格式的响应
-                .then(data => console.log(data)) // 处理解析后的数据
-                .catch(error => console.error('Error:', error)); // 处理错误
-            for(const value of delete_images){
-                if(this.difficulty_radio=="Simple"){
-                    delete this.similar_simple_imageInfo[value];
-                }else{
-                    delete this.similar_hard_imageInfo[value];
-                }
-                delete this.shown_imageInfo[value];
-            }
-            if(this.filter_mode==true)
-                for(let key in this.shown_imageInfo)this.shown_imageInfo[key][1] = false;
-            this.selected_imageInfo.length = 0;
-            this.current_selected_num = 0;
-            this.$forceUpdate();
-          },
-          choose_image(image_name){
-            if(this.selected_imageInfo.includes(image_name)){
-                let indexx = this.selected_imageInfo.indexOf(image_name);
-                this.selected_imageInfo.splice(indexx, 1);
-                this.shown_imageInfo[image_name][1] = false;
-                this.current_selected_num--;
-            }else{
-                this.selected_imageInfo.push(image_name);
-                this.shown_imageInfo[image_name][1] = true;
-                this.current_selected_num++;
-            }
-            this.$forceUpdate();
-          },
-          get_text_result(){
-            var mark_class = this.className;
-            fetch('http://127.0.0.1:5000/text_result/'+ mark_class )
-                .then(response => response.json())
-                .then(data => {
-                    this.options = data;
-                    this.allOptions = data;
-                    this.selectedOptions = [];
-                })
-                .catch(error => console.error('Error:', error));
-          },
-          get_detection_results(){
-            fetch('http://127.0.0.1:5000/detection_results')
-                .then(response => response.json())
-                .then(data => {
-                    this.results_overall = data[0];
-                    this.results_single_old = data[1];
-                    this.results_single_new = data[2];
-                    this.results = this.results_overall;
-                    this.$forceUpdate();
-                    overall_class_shown(this.results_overall);
-                    single_class_shown(this.results_single_old, this.results_single_new);
-                })
-                .catch(error => console.error('Error:', error));
-          },
-          describe_submit(){
-            var describes = {};
-            describes[this.className] = this.selectedOptions;
-            fetch('http://127.0.0.1:5000/describe_submit', {
-                method: 'POST', // 使用POST方法
-                headers: {
-                    'Content-Type': 'application/json' // 设置请求头，表明发送JSON数据
-                },
-                body: JSON.stringify(
-                    describes
-                ) // 将数据转换为JSON字符串
-                })
-                .then(response => response.json()) // 解析JSON格式的响应
-                .then(data => console.log(data)) // 处理解析后的数据
-                .catch(error => console.error('Error:', error)); // 处理错误
-            if(!this.Annotated_classes.includes(this.className)){
-                this.Annotated_classes.push(this.className);
-            }
-            this.$forceUpdate();
-          },
-          change_result(){
-            this.result_single_shown = (this.result_single_shown==true)?false:true; 
-            this.result_overall_shown = (this.result_overall_shown==true)?false:true; 
-            this.$forceUpdate();
-          },
-          handleCheckAllChange(val) {
-                this.selectedOptions = val ? this.allOptions : [];
-                this.isIndeterminate = false;
-          },
-          handleCheckedCitiesChange(value) {
-                let checkedCount = value.length;
-                this.checkAll = checkedCount === this.options.length;
-                this.isIndeterminate = checkedCount > 0 && checkedCount < this.options.length;
-          },
-          handleSliderChange(){
-            this.shown_imageInfo = {};
-            var similar_images = {};
-            if(this.difficulty_radio == "Simple")similar_images = this.similar_simple_imageInfo;
-            else similar_images = this.similar_hard_imageInfo;
-            for(let key in similar_images){
-                let value = getSimilarValue(key);
-                if(value >= this.real_value_left && value <= this.real_value_right){
-                    this.shown_imageInfo[key] = similar_images[key];
-                }
-            }
-            this.$forceUpdate();
-          },
-          switch_change(){
-            if(this.switch_value==false){
-                this.tabsName = "first";
-                this.similar_imageData = this.similar_imageInfo = [];
-                this.$forceUpdate();
-            }
-          },
-          set_similarities(){
-            this.similarities_simple = [];
-            this.similarities_hard = [];
-            var image_names = Object.keys(this.similar_simple_imageInfo);
-            for(let i in image_names){
-                this.similarities_simple.push(getSimilarValue(image_names[i]));
-            }
-            image_names = Object.keys(this.similar_hard_imageInfo);
-            for(let i in image_names){
-                this.similarities_hard.push(getSimilarValue(image_names[i]));
-            }
-          },
-          handleSliderInput(){
-            var similarities = [];
-            if(this.difficulty_radio == "Simple")similarities = this.similarities_simple;
-            else similarities = this.similarities_hard;
-            var v_min = Math.min(...similarities);
-            var v_max = Math.max(...similarities);
-            console.log(v_min);
-            this.real_value_left = (v_min + this.similarity_value[0] * (v_max - v_min)).toFixed(4);
-            this.real_value_right = (v_min + this.similarity_value[1] * (v_max - v_min)).toFixed(4);
-            this.$forceUpdate();
-          },
-          difficulty_change(){
-            this.handleSliderInput();
-            this.handleSliderChange();
-          },
-          message_notify() {
-            const h = this.$createElement;
-            this.$notify({
-            title: 'Successful Annotation',
-            message: h('i', { style: 'color: gray'}, 'Annotated class:  ' + this.className )
-            });
           },
         }
     }
@@ -655,7 +201,7 @@
           }
 
           .selected {
-              stroke: black;
+              stroke: red;
               stroke-width: 1;
           }
 

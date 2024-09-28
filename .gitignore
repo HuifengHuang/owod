@@ -20,3 +20,5 @@ python_script/*.pkl
 python_script/unknown_images_try1/
 python_script/unknown_images_try2/
 *.pyc
+python_script/image/
+python_script/combined_data.json

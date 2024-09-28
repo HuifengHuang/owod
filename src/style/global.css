@@ -162,6 +162,13 @@
     align-items: center;
 }
 
+.flex_row_left{
+    display: flex;
+    flex-direction:row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 .el-collapse-item__header{
     padding-left: 30px;
     font-size: 20px;
@@ -188,13 +195,14 @@
 
 .li_right{
     border: 1px solid gray;
-    width: 71px;
-    height: 71px;
+    width: 100%;
+    height: 100px;
     margin: 4px;
 }
 
 img {
-    width: 100%;
+    margin: 0 4px;
+    width: 100px;
     height: 100%;
 }
 
