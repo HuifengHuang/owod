@@ -175,7 +175,7 @@
                 .classed("circles",true)
                 .attr("r",1.5)
                 .attr("id",function(d,i){
-                    return "image" + i;
+                    return "image" + d[9];
                 })
                 .attr("cx",function(d){
                     return xScale(d[5]);
@@ -213,7 +213,7 @@
                 .classed("circles",true)
                 .attr("r",1.5)
                 .attr("id",function(d,i){
-                    return "text" + i;
+                    return "text" + d[9];
                 })
                 .attr("cx",function(d){
                     return xScale(d[7]);
@@ -257,8 +257,8 @@
                         .classed("selected",true);
                 ls.selectedItems().each((d,i)=>{
                     this.fetch_images(d);
-                    svg_image.select("#image"+i).classed("selected",true).attr("r",3);
-                    svg_text.select("#text"+i).classed("selected",true).attr("r",3);
+                    svg_image.select("#image"+d[9]).classed("selected",true).attr("r",3);
+                    svg_text.select("#text"+d[9]).classed("selected",true).attr("r",3);
                 })
                 this.$forceUpdate();
             };
