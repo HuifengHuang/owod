@@ -3,13 +3,26 @@
     <div class="wrapper">
         <div class="content">
             <div class="Head">
+                <div class="flex_row_start" style="height: 100%;width: 100%;">
+                    <span class="head_title">简单降维</span>
+                </div>
             </div>
 
             <div class="Main">
                 <div class="item1" style="width: 40%;flex-shrink: 0;">
-                    <div class="flex_row_center" style="width: 100%;height:100%;border: 1px solid #e9e9e9;">
-                        <div style="width: 500px; height:500px;">
-                            <svg id="svg" style="width: 500px; height:500px;" xmlns="http://www.w3.org/2000/svg">
+                    <div class="flex_row_center" style="width: 100%;height:50%;border: 1px solid #e9e9e9;margin: 5px;">
+                        <div style="width: 400px; height:400px;">
+                            <svg id="svg_combine" style="width: 400px; height:400px;" xmlns="http://www.w3.org/2000/svg">
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex_row_center" style="width: 100%;height:50%;">
+                        <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
+                            <svg id="svg_image" style="width: 350px; height:350px;" xmlns="http://www.w3.org/2000/svg">
+                            </svg>
+                        </div>
+                        <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
+                            <svg id="svg_text" style="width: 350px; height:350px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
                         </div>
                     </div>
@@ -72,6 +85,8 @@
                 .then(data => {
                     this.Raw_data = data;
                     this.reduce_distribution(data);
+                    this.image_redu_shown(data);
+                    this.text_redu_shown(data);
                 })
                 .catch(error => console.error('Error:', error));
         },
@@ -96,11 +111,11 @@
         },
   
         reduce_distribution(data){
-            var svg = d3.select("#svg")
+            var svg = d3.select("#svg_combine")
             var dataset = data;
             var [Xmax,Xmin] = findMaxMin(dataset,3);
             var [Ymax,Ymin] = findMaxMin(dataset,4);
-            let svg_element = document.getElementById("svg");
+            let svg_element = document.getElementById("svg_combine");
             let JQsvg = $(svg_element);
             svg_element = JQsvg[0];
             let svg_height = svg_element.style.height;
@@ -119,7 +134,7 @@
                 .enter()
                 .append("circle")
                 .classed("circles",true)
-                .attr("r",2)
+                .attr("r",1.5)
                 .attr("id",function(d,i){
                     return i;
                 })
@@ -134,8 +149,86 @@
                 .style('cursor','pointer');
             this.setLasso();
           },
+          image_redu_shown(data){
+            var svg = d3.select("#svg_image")
+            var dataset = data;
+            var [Xmax,Xmin] = findMaxMin(dataset,5);
+            var [Ymax,Ymin] = findMaxMin(dataset,6);
+            let svg_element = document.getElementById("svg_image");
+            let JQsvg = $(svg_element);
+            svg_element = JQsvg[0];
+            let svg_height = svg_element.style.height;
+            let svg_width = svg_element.style.width;
+            svg_height = svg_height.replace(/[^0-9]/ig, "");    //去掉px
+            svg_width = svg_width.replace(/[^0-9]/ig, "");
+            // console.log(svg_height + " " + svg_width);
+            var xScale = d3.scaleLinear()
+                .domain([Xmin-1, Xmax+1])
+                .range([0, svg_width]);
+            var yScale = d3.scaleLinear()
+                .domain([Ymax+1, Ymin-1])
+                .range([0, svg_height]);
+            svg.selectAll("circle")
+                .data(dataset)
+                .enter()
+                .append("circle")
+                .classed("circles",true)
+                .attr("r",1.5)
+                .attr("id",function(d,i){
+                    return "image" + i;
+                })
+                .attr("cx",function(d){
+                    return xScale(d[5]);
+                })
+                .attr("cy",function(d){
+                    return yScale(d[6]);
+                })
+                // .attr("stroke", "white")
+                // .attr("stroke-width", 0.05)
+                .style('cursor','pointer');
+          },
+          text_redu_shown(data){
+            var svg = d3.select("#svg_text")
+            var dataset = data;
+            var [Xmax,Xmin] = findMaxMin(dataset,7);
+            var [Ymax,Ymin] = findMaxMin(dataset,8);
+            let svg_element = document.getElementById("svg_text");
+            let JQsvg = $(svg_element);
+            svg_element = JQsvg[0];
+            let svg_height = svg_element.style.height;
+            let svg_width = svg_element.style.width;
+            svg_height = svg_height.replace(/[^0-9]/ig, "");    //去掉px
+            svg_width = svg_width.replace(/[^0-9]/ig, "");
+            // console.log(svg_height + " " + svg_width);
+            var xScale = d3.scaleLinear()
+                .domain([Xmin-1, Xmax+1])
+                .range([0, svg_width]);
+            var yScale = d3.scaleLinear()
+                .domain([Ymax+1, Ymin-1])
+                .range([0, svg_height]);
+            svg.selectAll("circle")
+                .data(dataset)
+                .enter()
+                .append("circle")
+                .classed("circles",true)
+                .attr("r",1.5)
+                .attr("id",function(d,i){
+                    return "text" + i;
+                })
+                .attr("cx",function(d){
+                    return xScale(d[7]);
+                })
+                .attr("cy",function(d){
+                    return yScale(d[8]);
+                })
+                // .attr("stroke", "white")
+                // .attr("stroke-width", 0.05)
+                .style('cursor','pointer');
+          },
           setLasso(){
             let circles = d3.selectAll('.circles');
+            var svg_image = d3.select("#svg_image");
+            var svg_text = d3.select("#svg_text");
             var lasso_start = () => {
                 ls.items() 
                         .classed("not_possible",true)
@@ -153,18 +246,21 @@
   
             var lasso_end = () => {
                 this.Selected_data = [];
+                var circles_image = svg_image.selectAll('.circles').classed("unselected",true);
+                var circles_text = svg_text.selectAll('.circles').classed("unselected",true);
                 ls.items()
                         .classed("not_possible",false)
                         .classed("possible",false);
                 ls.selectedItems()
                         .classed("selected",true);
-                ls.selectedItems().each((d)=>{
+                ls.selectedItems().each((d,i)=>{
                     this.fetch_images(d);
+                    let noname = svg_image.select("#image"+i).classed("selected",true).attr("r",3);
+                    svg_text.select("#text"+i).classed("selected",true).attr("r",3);
                 })
                 this.$forceUpdate();
-                console.log(this.Selected_data);
             };
-            var svgNode = d3.select("#svg");
+            var svgNode = d3.select("#svg_combine");
             var ls = lasso()
                 .closePathDistance(305) 
                 .closePathSelect(true) 
@@ -201,8 +297,11 @@
           }
 
           .selected {
+                fill:red;
               stroke: red;
-              stroke-width: 1;
+              stroke-width: 3;
+              stroke-opacity: 1;
+              opacity: 1;
           }
 
           .possible{
@@ -233,4 +332,7 @@
                 fill-opacity: 0.5;
             }
 
+            .unselected{
+                opacity: 0.3;
+            }
       </style>

@@ -145,7 +145,13 @@
 .flex_column_start{
     display: flex;
     flex-direction:column;
-    justify-content: start;
+    justify-content: flex-start;
+}
+
+.flex_row_start{
+    display: flex;
+    flex-direction:row;
+    justify-content: flex-start;
 }
 
 .flex_row_center{
