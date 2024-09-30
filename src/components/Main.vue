@@ -233,6 +233,8 @@
                 ls.items() 
                         .classed("not_possible",true)
                         .classed("selected",false);
+                svg_image.selectAll('.circles').classed("selected",false);
+                svg_text.selectAll('.circles').classed("selected",false);
             };
   
             var lasso_draw = () => {
@@ -246,8 +248,8 @@
   
             var lasso_end = () => {
                 this.Selected_data = [];
-                var circles_image = svg_image.selectAll('.circles').classed("unselected",true);
-                var circles_text = svg_text.selectAll('.circles').classed("unselected",true);
+                svg_image.selectAll('.circles').classed("unselected",true);
+                svg_text.selectAll('.circles').classed("unselected",true);
                 ls.items()
                         .classed("not_possible",false)
                         .classed("possible",false);
@@ -255,7 +257,7 @@
                         .classed("selected",true);
                 ls.selectedItems().each((d,i)=>{
                     this.fetch_images(d);
-                    let noname = svg_image.select("#image"+i).classed("selected",true).attr("r",3);
+                    svg_image.select("#image"+i).classed("selected",true).attr("r",3);
                     svg_text.select("#text"+i).classed("selected",true).attr("r",3);
                 })
                 this.$forceUpdate();
