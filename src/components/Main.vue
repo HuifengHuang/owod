@@ -17,13 +17,17 @@
                         </div>
                     </div>
                     <div class="flex_row_center" style="width: 100%;height:50%;">
-                        <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
+                        <!-- <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
                             <svg id="svg_image" style="width: 350px; height:350px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
                         </div>
                         <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
                             <svg id="svg_text" style="width: 350px; height:350px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
+                        </div> -->
+                        <div>
+                            <h1>名词共现网络</h1>
+                            <NounGraph :graphData="graphData" />
                         </div>
                     </div>
                 </div>
@@ -45,6 +49,21 @@
                             刷新</el-button>
                 </div>
 
+                <div class="item3" style="width: 20%;flex-shrink: 0;">
+                    <div class="scrollable-container" style="height: 90%; width: 100%; overflow-y: auto; margin-top: 30px; padding-top: 19px;">
+                    <div class="matrix-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                        <div v-for="(item, index) in Selected_data" :key="index" class="image-item">
+                        <img :src="item.image" alt="Image" class="uniform-image"/>
+                        <img :src="item.raw_image" alt="Raw Image" class="uniform-image"/>
+                        <!-- <span style="width: 100%; text-align: center;">{{ item.text }}</span> -->
+                        </div>
+                    </div>
+                    </div>
+                    <el-button type="info" style="height: 30px; padding: 0 20px; margin-right: 5px; font-size: medium;" @click="F5">
+                    刷新
+                    </el-button>
+                </div>
+
             </div>
 
         </div>
@@ -60,18 +79,25 @@
     import * as d3 from "d3";
     import lasso from "./d3-lasso";
     import $ from "jquery";
+    import NounGraph from "./NounGraph.vue";
     import { ref } from 'vue';
     import {generateDistinctColors, colors_50, colors_20} from './color.js';
     import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown ,density_shown, overall_class_shown} from "./common.js";
-  
+    import graphDataJson from "../assets/GranDf_caption_gcg_noun_graph.json"
+    import graphtestJson from "../assets/graph_data_with_importance.json"
     export default {
       name: 'vue-owod',
+      components: {
+        NounGraph, // 注册组件
+    },
       data() {
           return {
                 Raw_data:[],
                 //["图片路径","文本描述","原图名称","x坐标","y坐标"]
                 Selected_data:[],
                 //["本图片二进制数据","原图二进制数据","文本描述"]
+                graphData: graphDataJson,
+                // graphData: graphtestJson,
           }
       },
       mounted:function(){
@@ -277,7 +303,20 @@
           F5(){
             this.$forceUpdate();
           },
-        }
+          async loadGraphData() {
+            try {
+                // 动态加载 JSON 数据
+                const response = await fetch("/graphData.json");
+                if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                this.graphData = data; // 将数据赋值到 graphData
+            } catch (error) {
+                console.error("加载数据失败:", error);
+            }
+            },
+        },
     }
   </script>
   
@@ -285,7 +324,7 @@
   <style>
     @import '../style/global.css';
           body{
-              font-size:0 px;
+              font-size:0 px; 
           }
           .axis path,
           .axis line{
@@ -332,6 +371,12 @@
             .lasso .origin{
                 fill: #3399ff;
                 fill-opacity: 0.5;
+            }
+
+            .uniform-image {
+            width: 150px; /* 统一宽度 */
+            height: 150px; /* 统一高度 */
+            object-fit: cover; /* 保持图像比例并裁剪 */
             }
 
             .unselected{

@@ -1,7 +1,7 @@
 import os
 import shutil
 import torch
-import clip
+# import clip
 from PIL import Image
 import json
 from tqdm import tqdm
