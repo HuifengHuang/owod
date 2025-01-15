@@ -19,8 +19,8 @@ export default {
   },
   data() {
     return {
-      width: 2000, // 图形宽度
-      height: 1000, // 图形高度
+      width: 700, // 图形宽度
+      height: 800, // 图形高度
       centerNodeId: null, // 当前居中的节点 ID
     };
   },
@@ -39,6 +39,8 @@ export default {
       //   node.z = Math.random() * 200 - 100; // 设置随机深度
       // });
 
+      const graphGroup = svg.append("g").attr("class", "graph");
+
       // 配置力导向图的仿真
       const simulation = d3
         .forceSimulation(nodes) // 使用节点数据初始化
@@ -46,26 +48,26 @@ export default {
           "link",
           d3.forceLink(links).id((d) => d.id).distance(150) // 设置边的长度
         )
-        .force("charge", d3.forceManyBody().strength(-400)) // 节点之间的斥力
+        .force("charge", d3.forceManyBody().strength(-200)) // 节点之间的斥力
         .force("center", d3.forceCenter(this.width / 2, this.height / 2)) // 初始图形居中
         .force("collide", d3.forceCollide().radius(20)); // 防止节点重叠
         // .alphaDecay(0.02) // 调整速度衰减
         // .friction(0.9); // 增加摩擦力
 
       // **绘制边**
-      const link = svg
+      const link = graphGroup
         .selectAll("line") // 选择所有 `line` 元素
         .data(links) // 绑定边数据
         .join("line") // 更新模式：创建新的边
         .attr("stroke", "#aaa") // 边的颜色
-        .attr("stroke-width", (d) => Math.sqrt(d.value)); // 根据权重调整宽度
+        .attr("stroke-width", (d) => Math.sqrt(d.value)*4); // 根据权重调整宽度
 
       // **绘制节点**
-      const node = svg
+      const node = graphGroup
         .selectAll("circle") // 选择所有 `circle` 元素
         .data(nodes) // 绑定节点数据
         .join("circle") // 更新模式：创建新的节点
-        .attr("r", (d) => 5 + d.importance/50 * 2) // 节点的半径
+        .attr("r", (d) => 5 + d.importance/50 * 100) // 节点的半径
         .attr("fill", "steelblue") // 节点颜色
         .style("opacity", 1) // 所有节点初始完全可见
         .call(
@@ -78,7 +80,7 @@ export default {
         .attr("transform", (d) => `translate(${d.x},${d.y}) scale(${1 + d.z / 200})`); // 根据 z 深度调整节点大小
 
       // **绘制标签**
-      const labels = svg
+      const labels = graphGroup
         .selectAll("text") // 选择所有 `text` 元素
         .data(nodes) // 绑定节点数据
         .join("text") // 更新模式：创建新的标签
@@ -104,7 +106,7 @@ export default {
       node.on("click", (event, d) => {
         // 高亮相关节点
         node.style("opacity", (n) =>
-          links.some((l) => (l.source.id === d.id || l.target.id === d.id) && n.id === (l.source.id === d.id ? l.target.id : l.source.id))
+          links.some((l) => n.id === d.id || (l.source.id === d.id || l.target.id === d.id) && n.id === (l.source.id === d.id ? l.target.id : l.source.id))
             ? 1
             : 0.1
         );
@@ -112,12 +114,30 @@ export default {
         link.style("opacity", (l) =>
           l.source.id === d.id || l.target.id === d.id ? 1 : 0.1
         );
+        labels.style("opacity", (n) =>
+          links.some((l) => n.id === d.id || ((l.source.id === d.id || l.target.id === d.id) && n.id === (l.source.id === d.id ? l.target.id : l.source.id)))
+            ? 1
+            : 0.1
+        );
+        simulation
+          .force("x", d3.forceX(node => (node === d ? this.width / 2 : node.x)).strength(1)) // 将点击的节点吸引到中心
+          .force("y", d3.forceY(node => (node === d ? this.height / 2 : node.y)).strength(1)) // 同时吸引到 y 轴中心
+          .alpha(1) // 重新激活仿真
+          .restart();
       }).on("dblclick", () => {
         // 恢复原始样式
         node.style("opacity", (d) => (d.importance > 2 ? 1 : 0.3));
         link.style("opacity", (d) => (d.importance > 2 ? 1 : 0.3));
       });
 
+      const zoom = d3.zoom()
+        .scaleExtent([0.3, 5]) // 设置缩放比例范围
+        .on("zoom", (event) => {
+          graphGroup.attr("transform", event.transform); // 应用缩放和平移
+        });
+
+        // 将缩放行为绑定到 SVG
+        svg.call(zoom);
     },
 
     // 拖拽行为函数

@@ -10,13 +10,13 @@
 
             <div class="Main">
                 <div class="item1" style="width: 40%;flex-shrink: 0;">
-                    <div class="flex_row_center" style="width: 100%;height:50%;border: 1px solid #e9e9e9;margin: 5px;">
+                    <!-- <div class="flex_row_center" style="width: 100%;height:50%;border: 1px solid #e9e9e9;margin: 5px;">
                         <div style="width: 400px; height:400px;">
                             <svg id="svg_combine" style="width: 400px; height:400px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
                         </div>
-                    </div>
-                    <div class="flex_row_center" style="width: 100%;height:50%;">
+                    </div> -->
+                    <div class="flex_row_center" style="width: 100%;height:100%;">
                         <!-- <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
                             <svg id="svg_image" style="width: 350px; height:350px;" xmlns="http://www.w3.org/2000/svg">
                             </svg>
@@ -96,8 +96,8 @@
                 //["图片路径","文本描述","原图名称","x坐标","y坐标"]
                 Selected_data:[],
                 //["本图片二进制数据","原图二进制数据","文本描述"]
-                graphData: graphDataJson,
-                // graphData: graphtestJson,
+                // graphData: graphDataJson,
+                graphData: graphtestJson,
           }
       },
       mounted:function(){
