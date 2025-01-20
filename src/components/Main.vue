@@ -10,67 +10,25 @@
 
             <div class="Main">
                 <div class="item1" style="width: 40%;flex-shrink: 0;">
-                    <!-- <div class="flex_row_center" style="width: 100%;height:50%;border: 1px solid #e9e9e9;margin: 5px;">
-                        <div style="width: 400px; height:400px;">
-                            <svg id="svg_combine" style="width: 400px; height:400px;" xmlns="http://www.w3.org/2000/svg">
-                            </svg>
-                        </div>
-                    </div> -->
                     <div class="flex_row_center" style="width: 100%;height:100%;">
-                        <!-- <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
-                            <svg id="svg_image" style="width: 350px; height:350px;" xmlns="http://www.w3.org/2000/svg">
-                            </svg>
-                        </div>
-                        <div class="flex_row_center" style="width: 50%;height:95%;border: 1px solid #e9e9e9;margin: 5px;">
-                            <svg id="svg_text" style="width: 350px; height:350px;" xmlns="http://www.w3.org/2000/svg">
-                            </svg>
-                        </div> -->
                         <div>
                             <h1>名词共现网络</h1>
-                            <NounGraph :graphData="graphData" />
+                            <el-slider v-model="sliderValue" :min="0" :max="100" :step="1" @change="filterNodesByImportance"></el-slider>
+                            <NounGraph :graphData="graphData" @node-click="onNodeClick" />
                         </div>
                     </div>
                 </div>
 
                 <div class="item2" style="flex-grow: 1;height: 100%;">
-                    <div class="flex_column_start" style="height: 90%;width: 100%;margin-top: 30px;padding-top: 19px;">
-                        <div class="flex_column_center" style="width: 100%;height: 100%;margin-bottom: 5px;">
-                            <ul class="container_ul" style="height: 700px;">
-                                <li v-for="(item, index) in Selected_data" :key="index" class="li_right flex_row_left">
-                                    <img :src="item.image"/>
-                                    <img :src="item.raw_image"/>
-                                    <span style="width: 200px;">{{ item.text }}</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <el-button type="info" style="height: 30px;padding: 0 20px;margin-right: 5px; font-size: medium;"
-                            @click="F5">
-                            刷新</el-button>
+                    <Showimg :name_to_ids="name_to_ids"/>
                 </div>
+                
 
-                <div class="item3" style="width: 20%;flex-shrink: 0;">
-                    <div class="scrollable-container" style="height: 90%; width: 100%; overflow-y: auto; margin-top: 30px; padding-top: 19px;">
-                    <div class="matrix-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
-                        <div v-for="(item, index) in Selected_data" :key="index" class="image-item">
-                        <img :src="item.image" alt="Image" class="uniform-image"/>
-                        <img :src="item.raw_image" alt="Raw Image" class="uniform-image"/>
-                        <!-- <span style="width: 100%; text-align: center;">{{ item.text }}</span> -->
-                        </div>
-                    </div>
-                    </div>
-                    <el-button type="info" style="height: 30px; padding: 0 20px; margin-right: 5px; font-size: medium;" @click="F5">
-                    刷新
-                    </el-button>
-                </div>
 
             </div>
 
         </div>
   
-
-  
-
     </div>
   </template>
   
@@ -80,42 +38,87 @@
     import lasso from "./d3-lasso";
     import $ from "jquery";
     import NounGraph from "./NounGraph.vue";
+    import Showimg from "./Showimg.vue"
     import { ref } from 'vue';
     import {generateDistinctColors, colors_50, colors_20} from './color.js';
-    import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown ,density_shown, overall_class_shown} from "./common.js";
+    import { getSimilarValue , arrayBufferToBase64, findMaxMin, single_class_shown ,density_shown, overall_class_shown, filter_glaph} from "./common.js";
     import graphDataJson from "../assets/GranDf_caption_gcg_noun_graph.json"
     import graphtestJson from "../assets/graph_data_with_importance.json"
+    import graphfilter from "../assets/filtered_output.json"
     export default {
       name: 'vue-owod',
       components: {
         NounGraph, // 注册组件
+        Showimg,
     },
       data() {
           return {
                 Raw_data:[],
                 //["图片路径","文本描述","原图名称","x坐标","y坐标"]
-                Selected_data:[],
+                // Selected_data:null,
                 //["本图片二进制数据","原图二进制数据","文本描述"]
                 // graphData: graphDataJson,
-                graphData: graphtestJson,
+                graphData: graphfilter,
+                // selectedNodes: null,
+                // selectedimgid:null,
+                sliderValue: 0,
+                range:[0,20],
+                filteredNodes:[],
+                selected_names:[],
+                name_to_ids:{}
           }
       },
       mounted:function(){
         this.redu_show();
-
       },
       methods:{
-        redu_show(){
-            fetch('http://127.0.0.1:5000/data')
-                .then(response => response.json())
-                .then(data => {
-                    this.Raw_data = data;
-                    this.reduce_distribution(data);
-                    this.image_redu_shown(data);
-                    this.text_redu_shown(data);
-                })
-                .catch(error => console.error('Error:', error));
+        // redu_show(){
+        //     fetch('http://127.0.0.1:5000/data')
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             this.Raw_data = data;        
+        //             this.reduce_distribution(data);
+        //             this.image_redu_shown(data);
+        //             this.text_redu_shown(data);
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // },
+         // 根据滑块选择的importance范围筛选节点
+        filterNodesByImportance() {
+        this.filteredNodes = this.graphData.nodes.filter(node => {
+            return node.importance >= this.range[0] && node.importance <= this.range[1];
+        });
+        
+        // 为每个节点增加其连接的节点信息
+        this.filteredNodes.forEach(node => {
+            node.edges = this.graphData.edges.filter(edge => edge.source === node.id);
+        });
         },
+
+        // 处理节点连接图中节点点击事件
+        onNodeClick(nodes) {
+        this.selectedNodes = nodes; // 更新选中的相关节点信息
+        this.select_img();
+        },
+
+        select_img(){
+            fetch('http://127.0.0.1:5000/select_nodes', {
+                method: 'POST', // 使用POST方法
+                headers: {
+                    'Content-Type': 'application/json' // 设置请求头，表明发送JSON数据
+                },
+                body: JSON.stringify(
+                    this.selectedNodes
+                ) // 将数据转换为JSON字符串
+                })
+                .then(response => response.json()) // 解析JSON格式的响应
+                .then(data => {
+                    // this.selectedimgid = data.unique_prefixes;  
+                    // this.selected_names = data.names;
+                    this.name_to_ids = data.name_to_ids;
+                }) // 处理解析后的数据
+                .catch(error => console.error('Error:', error)); // 处理错误
+            },
 
         fetch_images(dataset){
             var temp = {};

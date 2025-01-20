@@ -1,0 +1,551 @@
+{
+    "nodes": [
+        {
+            "id": "river",
+            "name": "river",
+            "importance": 23
+        },
+        {
+            "id": "roof",
+            "name": "roof",
+            "importance": 25
+        },
+        {
+            "id": "flower",
+            "name": "flower",
+            "importance": 27
+        },
+        {
+            "id": "bench",
+            "name": "bench",
+            "importance": 27
+        },
+        {
+            "id": "bridge",
+            "name": "bridge",
+            "importance": 28
+        },
+        {
+            "id": "tower",
+            "name": "tower",
+            "importance": 24
+        },
+        {
+            "id": "stone",
+            "name": "stone",
+            "importance": 24
+        },
+        {
+            "id": "mountain",
+            "name": "mountain",
+            "importance": 23
+        },
+        {
+            "id": "bicycle",
+            "name": "bicycle",
+            "importance": 21
+        },
+        {
+            "id": "streetlight",
+            "name": "streetlight",
+            "importance": 28
+        },
+        {
+            "id": "chair",
+            "name": "chair",
+            "importance": 28
+        },
+        {
+            "id": "ground",
+            "name": "ground",
+            "importance": 27
+        },
+        {
+            "id": "dirt",
+            "name": "dirt",
+            "importance": 26
+        },
+        {
+            "id": "house",
+            "name": "house",
+            "importance": 23
+        },
+        {
+            "id": "door",
+            "name": "door",
+            "importance": 25
+        },
+        {
+            "id": "sea",
+            "name": "sea",
+            "importance": 20
+        },
+        {
+            "id": "box",
+            "name": "box",
+            "importance": 20
+        },
+        {
+            "id": "umbrella",
+            "name": "umbrella",
+            "importance": 20
+        },
+        {
+            "id": "uniform",
+            "name": "uniform",
+            "importance": 20
+        },
+        {
+            "id": "child",
+            "name": "child",
+            "importance": 24
+        },
+        {
+            "id": "bus",
+            "name": "bus",
+            "importance": 20
+        }
+    ],
+    "links": [
+        {
+            "source": "bench",
+            "target": "flower",
+            "value": 2
+        },
+        {
+            "source": "mountain",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "dirt",
+            "target": "house",
+            "value": 3
+        },
+        {
+            "source": "bicycle",
+            "target": "door",
+            "value": 1
+        },
+        {
+            "source": "house",
+            "target": "river",
+            "value": 2
+        },
+        {
+            "source": "river",
+            "target": "tower",
+            "value": 1
+        },
+        {
+            "source": "house",
+            "target": "tower",
+            "value": 2
+        },
+        {
+            "source": "bench",
+            "target": "ground",
+            "value": 4
+        },
+        {
+            "source": "chair",
+            "target": "umbrella",
+            "value": 2
+        },
+        {
+            "source": "flower",
+            "target": "uniform",
+            "value": 1
+        },
+        {
+            "source": "bridge",
+            "target": "flower",
+            "value": 1
+        },
+        {
+            "source": "door",
+            "target": "roof",
+            "value": 2
+        },
+        {
+            "source": "bench",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "bench",
+            "target": "door",
+            "value": 3
+        },
+        {
+            "source": "bridge",
+            "target": "river",
+            "value": 8
+        },
+        {
+            "source": "river",
+            "target": "stone",
+            "value": 2
+        },
+        {
+            "source": "bridge",
+            "target": "stone",
+            "value": 1
+        },
+        {
+            "source": "bench",
+            "target": "streetlight",
+            "value": 2
+        },
+        {
+            "source": "door",
+            "target": "door",
+            "value": 2
+        },
+        {
+            "source": "dirt",
+            "target": "tower",
+            "value": 1
+        },
+        {
+            "source": "bridge",
+            "target": "tower",
+            "value": 1
+        },
+        {
+            "source": "uniform",
+            "target": "uniform",
+            "value": 3
+        },
+        {
+            "source": "ground",
+            "target": "uniform",
+            "value": 2
+        },
+        {
+            "source": "flower",
+            "target": "flower",
+            "value": 1
+        },
+        {
+            "source": "mountain",
+            "target": "river",
+            "value": 3
+        },
+        {
+            "source": "child",
+            "target": "door",
+            "value": 3
+        },
+        {
+            "source": "dirt",
+            "target": "flower",
+            "value": 2
+        },
+        {
+            "source": "child",
+            "target": "ground",
+            "value": 2
+        },
+        {
+            "source": "bench",
+            "target": "child",
+            "value": 2
+        },
+        {
+            "source": "dirt",
+            "target": "ground",
+            "value": 2
+        },
+        {
+            "source": "bench",
+            "target": "dirt",
+            "value": 1
+        },
+        {
+            "source": "box",
+            "target": "chair",
+            "value": 1
+        },
+        {
+            "source": "bench",
+            "target": "bridge",
+            "value": 1
+        },
+        {
+            "source": "door",
+            "target": "streetlight",
+            "value": 1
+        },
+        {
+            "source": "dirt",
+            "target": "uniform",
+            "value": 2
+        },
+        {
+            "source": "house",
+            "target": "roof",
+            "value": 2
+        },
+        {
+            "source": "child",
+            "target": "uniform",
+            "value": 1
+        },
+        {
+            "source": "mountain",
+            "target": "sea",
+            "value": 2
+        },
+        {
+            "source": "door",
+            "target": "house",
+            "value": 2
+        },
+        {
+            "source": "dirt",
+            "target": "roof",
+            "value": 2
+        },
+        {
+            "source": "bridge",
+            "target": "mountain",
+            "value": 2
+        },
+        {
+            "source": "roof",
+            "target": "tower",
+            "value": 2
+        },
+        {
+            "source": "chair",
+            "target": "child",
+            "value": 1
+        },
+        {
+            "source": "sea",
+            "target": "umbrella",
+            "value": 1
+        },
+        {
+            "source": "chair",
+            "target": "sea",
+            "value": 1
+        },
+        {
+            "source": "child",
+            "target": "umbrella",
+            "value": 1
+        },
+        {
+            "source": "bus",
+            "target": "child",
+            "value": 1
+        },
+        {
+            "source": "bus",
+            "target": "umbrella",
+            "value": 1
+        },
+        {
+            "source": "flower",
+            "target": "house",
+            "value": 1
+        },
+        {
+            "source": "dirt",
+            "target": "door",
+            "value": 1
+        },
+        {
+            "source": "door",
+            "target": "flower",
+            "value": 1
+        },
+        {
+            "source": "flower",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "chair",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "streetlight",
+            "target": "tower",
+            "value": 2
+        },
+        {
+            "source": "chair",
+            "target": "chair",
+            "value": 2
+        },
+        {
+            "source": "flower",
+            "target": "streetlight",
+            "value": 1
+        },
+        {
+            "source": "bus",
+            "target": "bus",
+            "value": 1
+        },
+        {
+            "source": "bicycle",
+            "target": "stone",
+            "value": 1
+        },
+        {
+            "source": "bicycle",
+            "target": "tower",
+            "value": 1
+        },
+        {
+            "source": "bridge",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "bicycle",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "door",
+            "target": "ground",
+            "value": 1
+        },
+        {
+            "source": "dirt",
+            "target": "mountain",
+            "value": 1
+        },
+        {
+            "source": "bicycle",
+            "target": "bus",
+            "value": 1
+        },
+        {
+            "source": "child",
+            "target": "house",
+            "value": 1
+        },
+        {
+            "source": "bench",
+            "target": "bus",
+            "value": 1
+        },
+        {
+            "source": "chair",
+            "target": "stone",
+            "value": 2
+        },
+        {
+            "source": "ground",
+            "target": "stone",
+            "value": 2
+        },
+        {
+            "source": "chair",
+            "target": "ground",
+            "value": 1
+        },
+        {
+            "source": "house",
+            "target": "mountain",
+            "value": 2
+        },
+        {
+            "source": "house",
+            "target": "stone",
+            "value": 1
+        },
+        {
+            "source": "mountain",
+            "target": "stone",
+            "value": 1
+        },
+        {
+            "source": "roof",
+            "target": "umbrella",
+            "value": 1
+        },
+        {
+            "source": "bridge",
+            "target": "house",
+            "value": 1
+        },
+        {
+            "source": "box",
+            "target": "stone",
+            "value": 1
+        },
+        {
+            "source": "box",
+            "target": "dirt",
+            "value": 1
+        },
+        {
+            "source": "chair",
+            "target": "flower",
+            "value": 1
+        },
+        {
+            "source": "flower",
+            "target": "mountain",
+            "value": 1
+        },
+        {
+            "source": "child",
+            "target": "dirt",
+            "value": 1
+        },
+        {
+            "source": "bus",
+            "target": "tower",
+            "value": 1
+        },
+        {
+            "source": "box",
+            "target": "bus",
+            "value": 1
+        },
+        {
+            "source": "bench",
+            "target": "house",
+            "value": 1
+        },
+        {
+            "source": "box",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "box",
+            "target": "ground",
+            "value": 1
+        },
+        {
+            "source": "child",
+            "target": "roof",
+            "value": 1
+        },
+        {
+            "source": "umbrella",
+            "target": "umbrella",
+            "value": 2
+        },
+        {
+            "source": "bicycle",
+            "target": "umbrella",
+            "value": 1
+        },
+        {
+            "source": "bench",
+            "target": "umbrella",
+            "value": 2
+        }
+    ]
+}

@@ -34,11 +34,6 @@ export default {
       // 选择 SVG 元素
       const svg = d3.select(this.$refs.svg);
 
-      // // 为每个节点添加模拟深度的 z 属性
-      // nodes.forEach((node, index) => {
-      //   node.z = Math.random() * 200 - 100; // 设置随机深度
-      // });
-
       const graphGroup = svg.append("g").attr("class", "graph");
 
       // 配置力导向图的仿真
@@ -67,7 +62,7 @@ export default {
         .selectAll("circle") // 选择所有 `circle` 元素
         .data(nodes) // 绑定节点数据
         .join("circle") // 更新模式：创建新的节点
-        .attr("r", (d) => 5 + d.importance/50 * 100) // 节点的半径
+        .attr("r", (d) => Math.sqrt(d.importance) * 2) // 节点的半径
         .attr("fill", "steelblue") // 节点颜色
         .style("opacity", 1) // 所有节点初始完全可见
         .call(
@@ -104,11 +99,20 @@ export default {
         labels.attr("x", (d) => d.x).attr("y", (d) => d.y);
       });
       node.on("click", (event, d) => {
+        // 找到所有与当前节点 d 相关的节点
+        const relatedNodes = nodes.filter((n) =>
+          links.some(
+            (l) =>
+              n.id === d.id ||
+              (l.source.id === d.id || l.target.id === d.id) &&
+              n.id === (l.source.id === d.id ? l.target.id : l.source.id)
+          )
+        );
+        // 向父组件传递相关节点数据
+        this.$emit("node-click", relatedNodes);
         // 高亮相关节点
         node.style("opacity", (n) =>
-          links.some((l) => n.id === d.id || (l.source.id === d.id || l.target.id === d.id) && n.id === (l.source.id === d.id ? l.target.id : l.source.id))
-            ? 1
-            : 0.1
+          relatedNodes.includes(n) ? 1 : 0.1
         );
         // 高亮相关边
         link.style("opacity", (l) =>
@@ -126,8 +130,11 @@ export default {
           .restart();
       }).on("dblclick", () => {
         // 恢复原始样式
-        node.style("opacity", (d) => (d.importance > 2 ? 1 : 0.3));
-        link.style("opacity", (d) => (d.importance > 2 ? 1 : 0.3));
+        node.style("opacity", 1);
+        link.style("opacity", 1);
+        labels.style("opacity", 1);
+        // node.style("opacity", (d) => (d.importance > 2 ? 1 : 0.3));
+        // link.style("opacity", (d) => (d.importance > 2 ? 1 : 0.3));
       });
 
       const zoom = d3.zoom()
@@ -138,6 +145,14 @@ export default {
 
         // 将缩放行为绑定到 SVG
         svg.call(zoom);
+        // 禁用双击缩放行为
+        svg.call(zoom).on("dblclick.zoom", null);
+
+        // svg.on("click", () => {
+        //   node.style("opacity", 1);
+        //   link.style("opacity", 1);
+        //   labels.style("opacity", 1);
+        // });
     },
 
     // 拖拽行为函数

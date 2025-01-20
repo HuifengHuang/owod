@@ -1,3 +1,4 @@
+
 export function getSimilarValue(image_path){
     let image_name = image_path.match(/0\.(.*)/)[0];
     let value = image_name.slice(0,6);
@@ -296,4 +297,8 @@ export function density_shown(svg_name, similarities){
        .attr("fill", "#000")
        .attr("text-anchor", "end")
        .attr("font-weight", "bold");
+}
+
+export function filter_glaph(json_glaph, min, max){
+    
 }

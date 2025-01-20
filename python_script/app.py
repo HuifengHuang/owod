@@ -5,10 +5,11 @@ import re
 
 import requests
 from PIL import Image
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 
 from flask_cors import CORS
 from data1 import getData
+from chuli_json import filter_graph
 # from get_result import get_result_new
 # from main_code import tsne_and_kmeans
 # from main_code2 import find_similar_images, get_HardAndSimple, ChatWithLLM
@@ -18,35 +19,118 @@ app = Flask(__name__)
 CORS(app, resources=r'/*')
 
 
-@app.route('/data')
-def data():
-    """
-    获取降维和聚类数据
-    """
-    encoded_file = 'encoded2.pkl'
+# @app.route('/data')
+# def data():
+#     """
+#     获取降维和聚类数据
+#     """
+#     encoded_file = 'encoded2.pkl'
 
-    print("start t-sne and k-means...")
-    return json.dumps(getData())
-    # return json.dumps(tsne_and_kmeans(encoded_file))
+#     print("start t-sne and k-means...")
+#     return json.dumps(getData())
+#     # return json.dumps(tsne_and_kmeans(encoded_file))
+@app.route('/select_nodes', methods=["POST"])
+def select_imgbynodes():
+    select_nodes = request.get_json()
+    with open('D:\\博士阶段\\数据\\多模态\\DranG\\OpenPsg_GCG\\index_OpenPsg.json', 'r', encoding='utf-8') as f:
+        data_index_json = json.load(f)
+    names = [item['name'] for item in select_nodes]
+    names_set = set(names)
+    result = [item for item in data_index_json if item[1] in names_set]
 
+    # 构建 name 和 id 的对应关系
+    name_to_ids = {}
+    for item in result:
+        name = item[1]  # 假设 name 在 JSON 文件的第二个位置
+        id = item[0]    # 假设 id 在 JSON 文件的第一个位置
+        
+        if name not in name_to_ids:
+            name_to_ids[name] = []  # 初始化一个空列表
+        name_to_ids[name].append(id)  # 将 id 添加到对应的 name 下
+    return jsonify({
+        'message': 'Data received successfully!',
+        'name_to_ids': name_to_ids, 
+    }), 200
 
-@app.route('/images/<path:filename>', methods=["GET"])
-def get_images(filename):
-    """
-    获取图片比特流
-    """
-    img_url = './' + filename
-    with open(img_url, 'rb') as f:
-        a = f.read()
-    '''对读取的图片进行处理'''
-    img_stream = io.BytesIO(a)
-    img = Image.open(img_stream)
+@app.route('/select_imgids', methods=["POST"])
+def load_imgsbyid():
+    name_to_ids = request.get_json()
+    # 提取 names 从 name_to_ids
+    names = list(name_to_ids.keys())
+    file_path = "D:\\博士阶段\\数据\\多模态\\DranG\\OpenPsg_GCG\\image"
+    mask_file_path = "D:\\博士阶段\\数据\\多模态\\DranG\\OpenPsg_GCG\\image-mask"
+    name_to_imgpaths = {}
+    name_to_maskpaths = {}
+    for name in names:
+        name_to_imgpaths[name] = []
+        for imgid in name_to_ids[name]:
+            full_path = os.path.join(file_path, imgid.split('-')[0] + '.jpg')
+            if full_path not in name_to_imgpaths[name]:
+                name_to_imgpaths[name].append(full_path)
+        name_to_maskpaths[name] = []
+        for imgid in name_to_ids[name]:
+            full_path = os.path.join(mask_file_path, imgid + '.png')
+            if full_path not in name_to_maskpaths[name]:
+                name_to_maskpaths[name].append(full_path)
 
-    imgByteArr = io.BytesIO()
-    img.save(imgByteArr, format='PNG')
-    imgByteArr = imgByteArr.getvalue()
-    # print(imgByteArr)
-    return imgByteArr
+    return jsonify({
+        'message': 'Images found successfully!',
+        'names':names,
+        'name_to_imgpaths': name_to_imgpaths
+    }), 200
+
+@app.route('/images/<filename>')
+def serve_image(filename):
+    image_path = f"D:\\博士阶段\\数据\\多模态\\DranG\\OpenPsg_GCG\\image\\{filename}"
+    return send_file(image_path, mimetype='image/jpeg')
+# @app.route()
+# def filter_graph():
+#     data = request.json
+#     graph = data.get("graph")
+#     filtered_graph = process_graph(graph)
+#     return jsonify({"filtered_graph": filtered_graph})
+# def process_graph(graph):
+#     importance_min = 5
+#     importance_max = 20
+#     # 筛选节点
+#     filtered_nodes = [
+#         node for node in data['nodes']
+#         if importance_min <= node['importance'] <= importance_max
+#     ]
+#     # 获取筛选后节点的 ID 列表
+#     valid_node_ids = {node['id'] for node in filtered_nodes}
+    
+#     # 筛选链接
+#     filtered_links = [
+#         link for link in data['links']
+#         if link['source'] in valid_node_ids and link['target'] in valid_node_ids
+#     ]
+    
+#     # 生成新的数据结构
+#     filtered_data = {
+#         'nodes': filtered_nodes,
+#         'links': filtered_links
+#     }
+
+#     return filtered_data
+
+# @app.route('/images/<path:filename>', methods=["GET"])
+# def get_images(filename):
+#     """
+#     获取图片比特流
+#     """
+#     img_url = './' + filename
+#     with open(img_url, 'rb') as f:
+#         a = f.read()
+#     '''对读取的图片进行处理'''
+#     img_stream = io.BytesIO(a)
+#     img = Image.open(img_stream)
+
+#     imgByteArr = io.BytesIO()
+#     img.save(imgByteArr, format='PNG')
+#     imgByteArr = imgByteArr.getvalue()
+#     # print(imgByteArr)
+#     return imgByteArr
 
 
 # @app.route('/simi/<path:filename>', methods=["GET"])
